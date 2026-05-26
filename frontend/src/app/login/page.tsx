@@ -8,7 +8,7 @@ import { Icon, I } from "@/components/primitives";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("maya@tecsior.studio");
+  const [email, setEmail] = useState("admin@tecsior.com");
   const [password, setPassword] = useState("tecsior");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -102,7 +102,7 @@ export default function LoginPage() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@tecsior.studio"
+          placeholder="you@tecsior.com"
           autoComplete="email"
         />
 
@@ -138,16 +138,6 @@ export default function LoginPage() {
 
         <div style={{ fontSize: 12, color: "var(--text-dim)", textAlign: "center", marginTop: 4 }}>
           New here? <Link href="/register" style={{ color: "var(--accent-soft)" }}>Create an account</Link>
-        </div>
-        <div
-          style={{
-            fontSize: 11,
-            color: "var(--text-dim)",
-            textAlign: "center",
-            fontFamily: "'Geist Mono', monospace",
-          }}
-        >
-          demo · maya@tecsior.studio / tecsior
         </div>
       </form>
     </div>

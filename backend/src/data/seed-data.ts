@@ -30,21 +30,22 @@ export interface SeedMember {
   hourly: number;
 }
 
-// Every member can sign in with this password (demo). Maya is the admin.
+// Every member can sign in with this password. `admin` is the default super admin.
 export const DEFAULT_PASSWORD = "tecsior";
 
 export const TEAM: SeedMember[] = [
-  { id: "mr", name: "Maya Reyes",    email: "maya@tecsior.studio",  role: "Founder", appRole: "founder", title: "Founder & CEO",          bg: "linear-gradient(135deg, #a855f7, #f472b6)", mood: "Shipping rate-limit middleware", status: "tracking", util: 92, hourly: 16500 },
-  { id: "jk", name: "Jin Kobayashi", email: "jin@tecsior.studio",   role: "PM",      appRole: "pm",      title: "Senior Project Manager", bg: "linear-gradient(135deg, #06b6d4, #14b8a6)", mood: "Helio sprint planning",          status: "tracking", util: 88, hourly: 13000 },
-  { id: "an", name: "Aman Naidu",    email: "aman@tecsior.studio",  role: "Dev",     appRole: "dev",     title: "Staff Engineer",         bg: "linear-gradient(135deg, #ec4899, #f472b6)", mood: "Reviewing PR #481",              status: "tracking", util: 95, hourly: 14500 },
-  { id: "lp", name: "Liv Park",      email: "liv@tecsior.studio",   role: "Design",  appRole: "dev",     title: "Lead Product Designer",  bg: "linear-gradient(135deg, #10b981, #06b6d4)", mood: "Cart checkout v3",               status: "tracking", util: 78, hourly: 13500 },
-  { id: "to", name: "Tomi Olabode",  email: "tomi@tecsior.studio",  role: "Dev",     appRole: "dev",     title: "Senior Engineer",        bg: "linear-gradient(135deg, #9333ea, #ec4899)", mood: "Quill editor refactor",          status: "tracking", util: 84, hourly: 13000 },
-  { id: "sv", name: "Sara Vasquez",  email: "sara@tecsior.studio",  role: "QA",      appRole: "dev",     title: "QA Lead",                bg: "linear-gradient(135deg, #f59e0b, #ef4444)", mood: "Smoke tests · Atlas",            status: "idle",     util: 72, hourly: 11000 },
-  { id: "rb", name: "Rumi Bhatt",    email: "rumi@tecsior.studio",  role: "Dev",     appRole: "dev",     title: "Mobile Engineer",        bg: "linear-gradient(135deg, #06b6d4, #a855f7)", mood: "iOS onboarding",                 status: "tracking", util: 80, hourly: 13000 },
-  { id: "ek", name: "Eli Kazan",     email: "eli@tecsior.studio",   role: "Design",  appRole: "dev",     title: "Product Designer",       bg: "linear-gradient(135deg, #f472b6, #fbbf24)", mood: "Northwind illustrations",        status: "meeting",  util: 70, hourly: 12000 },
-  { id: "pn", name: "Priya Nair",    email: "priya@tecsior.studio", role: "PM",      appRole: "pm",      title: "Project Manager",        bg: "linear-gradient(135deg, #14b8a6, #84cc16)", mood: "Client check-in · Lumen",        status: "idle",     util: 65, hourly: 12500 },
-  { id: "dv", name: "Diego Vela",    email: "diego@tecsior.studio", role: "Dev",     appRole: "dev",     title: "Backend Engineer",       bg: "linear-gradient(135deg, #6366f1, #06b6d4)", mood: "DB migrations",                  status: "tracking", util: 86, hourly: 13500 },
-  { id: "no", name: "Nora Olsen",    email: "nora@tecsior.studio",  role: "Ops",     appRole: "dev",     title: "Operations",             bg: "linear-gradient(135deg, #f97316, #ec4899)", mood: "Invoice runs",                   status: "offline",  util: 0,  hourly: 9500 },
+  { id: "ad", name: "Super Admin",   email: "admin@tecsior.com", role: "Founder", appRole: "founder", title: "Super Admin",            bg: "linear-gradient(135deg, #6366f1, #a855f7)", mood: "",                               status: "offline",  util: 0,  hourly: 0 },
+  { id: "mr", name: "Maya Reyes",    email: "maya@tecsior.com",  role: "Founder", appRole: "founder", title: "Founder & CEO",          bg: "linear-gradient(135deg, #a855f7, #f472b6)", mood: "Shipping rate-limit middleware", status: "tracking", util: 92, hourly: 16500 },
+  { id: "jk", name: "Jin Kobayashi", email: "jin@tecsior.com",   role: "PM",      appRole: "pm",      title: "Senior Project Manager", bg: "linear-gradient(135deg, #06b6d4, #14b8a6)", mood: "Helio sprint planning",          status: "tracking", util: 88, hourly: 13000 },
+  { id: "an", name: "Aman Naidu",    email: "aman@tecsior.com",  role: "Dev",     appRole: "dev",     title: "Staff Engineer",         bg: "linear-gradient(135deg, #ec4899, #f472b6)", mood: "Reviewing PR #481",              status: "tracking", util: 95, hourly: 14500 },
+  { id: "lp", name: "Liv Park",      email: "liv@tecsior.com",   role: "Design",  appRole: "dev",     title: "Lead Product Designer",  bg: "linear-gradient(135deg, #10b981, #06b6d4)", mood: "Cart checkout v3",               status: "tracking", util: 78, hourly: 13500 },
+  { id: "to", name: "Tomi Olabode",  email: "tomi@tecsior.com",  role: "Dev",     appRole: "dev",     title: "Senior Engineer",        bg: "linear-gradient(135deg, #9333ea, #ec4899)", mood: "Quill editor refactor",          status: "tracking", util: 84, hourly: 13000 },
+  { id: "sv", name: "Sara Vasquez",  email: "sara@tecsior.com",  role: "QA",      appRole: "dev",     title: "QA Lead",                bg: "linear-gradient(135deg, #f59e0b, #ef4444)", mood: "Smoke tests · Atlas",            status: "idle",     util: 72, hourly: 11000 },
+  { id: "rb", name: "Rumi Bhatt",    email: "rumi@tecsior.com",  role: "Dev",     appRole: "dev",     title: "Mobile Engineer",        bg: "linear-gradient(135deg, #06b6d4, #a855f7)", mood: "iOS onboarding",                 status: "tracking", util: 80, hourly: 13000 },
+  { id: "ek", name: "Eli Kazan",     email: "eli@tecsior.com",   role: "Design",  appRole: "dev",     title: "Product Designer",       bg: "linear-gradient(135deg, #f472b6, #fbbf24)", mood: "Northwind illustrations",        status: "meeting",  util: 70, hourly: 12000 },
+  { id: "pn", name: "Priya Nair",    email: "priya@tecsior.com", role: "PM",      appRole: "pm",      title: "Project Manager",        bg: "linear-gradient(135deg, #14b8a6, #84cc16)", mood: "Client check-in · Lumen",        status: "idle",     util: 65, hourly: 12500 },
+  { id: "dv", name: "Diego Vela",    email: "diego@tecsior.com", role: "Dev",     appRole: "dev",     title: "Backend Engineer",       bg: "linear-gradient(135deg, #6366f1, #06b6d4)", mood: "DB migrations",                  status: "tracking", util: 86, hourly: 13500 },
+  { id: "no", name: "Nora Olsen",    email: "nora@tecsior.com",  role: "Ops",     appRole: "dev",     title: "Operations",             bg: "linear-gradient(135deg, #f97316, #ec4899)", mood: "Invoice runs",                   status: "offline",  util: 0,  hourly: 9500 },
 ];
 
 export const CLIENTS: Client[] = [

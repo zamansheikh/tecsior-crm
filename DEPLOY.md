@@ -95,7 +95,7 @@ sudo certbot --nginx -d crm.tecsior.com -d crmapi.tecsior.com
 ## Verify
 
 - `https://crmapi.tecsior.com/api/health` → `{ "ok": true, … }`
-- `https://crm.tecsior.com` → sign in with `maya@tecsior.studio` / `tecsior`
+- `https://crm.tecsior.com` → sign in with `admin@tecsior.com` / `tecsior`
 - `pm2 status` on the box shows `tecsior-crm-api` + `tecsior-crm-web` online.
 
 ## Handy commands (on the VPS)

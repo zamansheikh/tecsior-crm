@@ -2,7 +2,7 @@
   "permissions": {
     "allow": [
       "Bash(echo \"=== EXIT $? ===\")",
-      "Bash(curl -s -c /tmp/tecsior_cookies.txt -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"maya@tecsior.studio\",\"password\":\"tecsior\"}')",
+      "Bash(curl -s -c /tmp/tecsior_cookies.txt -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"maya@tecsior.com\",\"password\":\"tecsior\"}')",
       "Bash(curl -s -b /tmp/tecsior_cookies.txt http://localhost:4000/api/auth/me)",
       "Bash(curl -s -b /tmp/tecsior_cookies.txt http://localhost:4000/api/projects)",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\('projects:',j.length,'first:',j[0]?.name\\)}\\)\")",
@@ -19,21 +19,21 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/dashboard)",
       "Bash(curl -s http://localhost:3000/login)",
       "Bash(curl -s -i -X OPTIONS http://localhost:4000/api/auth/login -H \"Origin: http://localhost:3000\" -H \"Access-Control-Request-Method: POST\" -H \"Access-Control-Request-Headers: content-type\")",
-      "Bash(curl -s -i -X POST http://localhost:4000/api/auth/login -H \"Origin: http://localhost:3000\" -H \"Content-Type: application/json\" -d '{\"email\":\"maya@tecsior.studio\",\"password\":\"tecsior\"}')",
+      "Bash(curl -s -i -X POST http://localhost:4000/api/auth/login -H \"Origin: http://localhost:3000\" -H \"Content-Type: application/json\" -d '{\"email\":\"maya@tecsior.com\",\"password\":\"tecsior\"}')",
       "Bash(cd 'C:\\\\Users\\\\zaman\\\\.claude\\\\projects\\\\f--PN-Apps-tecsior-crm\\\\memory' && if [ -f MEMORY.md ]; then echo \"exists\"; else echo \"creating\"; fi)",
       "Read(//c/Users/zaman/.claude/projects/f--PN-Apps-tecsior-crm/memory/**)",
-      "Bash(curl -s -c tc.txt -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"maya@tecsior.studio\",\"password\":\"tecsior\"}')",
+      "Bash(curl -s -c tc.txt -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"maya@tecsior.com\",\"password\":\"tecsior\"}')",
       "Bash(curl -s -b tc.txt -X POST http://localhost:4000/api/time/timer/start -H \"Content-Type: application/json\" -d '{\"project\":\"helio-v2\",\"task\":\"TSK-241\",\"note\":\"Timer test\",\"billable\":true}')",
       "Bash(curl -s -b tc.txt http://localhost:4000/api/time/timer)",
       "Bash(curl -s -b tc.txt -X POST http://localhost:4000/api/time/timer/pause)",
       "Bash(curl -s -b tc.txt -X POST http://localhost:4000/api/time/timer/stop)",
-      "Bash(curl -s -c reg.txt -X POST http://localhost:4000/api/auth/register -H \"Content-Type: application/json\" -d '{\"name\":\"Test User\",\"email\":\"test@tecsior.studio\",\"password\":\"secret123\"}')",
+      "Bash(curl -s -c reg.txt -X POST http://localhost:4000/api/auth/register -H \"Content-Type: application/json\" -d '{\"name\":\"Test User\",\"email\":\"test@tecsior.com\",\"password\":\"secret123\"}')",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\('user:',j.user?.id,j.user?.email,j.user?.appRole\\)}\\)\")",
       "Bash(curl -s -b reg.txt -X POST http://localhost:4000/api/auth/change-password -H \"Content-Type: application/json\" -d '{\"currentPassword\":\"secret123\",\"newPassword\":\"newsecret123\"}')",
-      "Bash(curl -s -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"test@tecsior.studio\",\"password\":\"newsecret123\"}')",
+      "Bash(curl -s -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"test@tecsior.com\",\"password\":\"newsecret123\"}')",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(j.user?'OK login as '+j.user.id:j.error\\)}\\)\")",
       "Bash(curl -s -b reg.txt -X POST http://localhost:4000/api/auth/change-password -H \"Content-Type: application/json\" -d '{\"currentPassword\":\"WRONG\",\"newPassword\":\"abcdef\"}')",
-      "Bash(curl -s -c m.txt -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"maya@tecsior.studio\",\"password\":\"tecsior\"}')",
+      "Bash(curl -s -c m.txt -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"maya@tecsior.com\",\"password\":\"tecsior\"}')",
       "Bash(curl -s -b m.txt http://localhost:4000/api/tasks/TSK-241)",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\('subtasks',j.subtasks,'done',j.done,'comments',j.comments,'checklist[0]:',j.checklist?.[0]?.title\\)}\\)\")",
       "Bash(curl -s -b m.txt http://localhost:4000/api/tasks/TSK-241/comments)",
@@ -79,7 +79,7 @@
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);j.forEach\\(a=>console.log\\('  '+a.id,a.name.padEnd\\(26\\),'cost',a.cost,'accumDep',a.accumulatedDepreciation,'NBV',a.netBookValue\\)\\)}\\)\")",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(' balanced',j.balanced,'DR',j.totalDebit.toLocaleString\\(\\),'CR',j.totalCredit.toLocaleString\\(\\)\\)}\\)\")",
       "Bash(curl -s -b m.txt -X PATCH http://localhost:4000/api/team/sv -H \"Content-Type: application/json\" -d '{\"appRole\":\"auditor\"}')",
-      "Bash(curl -s -c s.txt -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"sara@tecsior.studio\",\"password\":\"tecsior\"}')",
+      "Bash(curl -s -c s.txt -X POST http://localhost:4000/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"sara@tecsior.com\",\"password\":\"tecsior\"}')",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\('  role',j.user?.appRole\\)}\\)\")",
       "Bash(curl -s -b s.txt -o /dev/null -w \"  GET status %{http_code}\\\\n\" http://localhost:4000/api/expenses)",
       "Bash(curl -s -b s.txt -X POST http://localhost:4000/api/expenses -H \"Content-Type: application/json\" -d '{\"category\":\"Office\",\"amount\":100,\"currency\":\"BDT\"}')",
@@ -107,7 +107,11 @@
       "Bash(perl -i -pe 's/hourly: \\(\\\\d+\\) }/\"hourly: \".\\($1*100\\).\" }\"/ge' src/data/seed-data.ts)",
       "Bash(grep -n 'rate\\\\|\\\\$' 'src/app/\\(app\\)/time/page.tsx')",
       "Bash(perl -i -pe 's/Rate \\\\\\(\\\\$\\\\/hr\\\\\\)/Rate \\(৳\\\\/hr\\)/g' 'src/app/\\(app\\)/team/page.tsx')",
-      "Bash(git update-index *)"
+      "Bash(git update-index *)",
+      "PowerShell(npx tsx src/scripts/migrate-email-domain.ts)",
+      "PowerShell(Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\check-emails.ts','F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\migrate-email-domain.ts'; if \\(-not \\(Get-ChildItem 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' -ErrorAction SilentlyContinue\\)\\) { Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' })",
+      "PowerShell(npx tsx src/scripts/add-admin.ts)",
+      "PowerShell(Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\check.ts','F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\add-admin.ts'; if \\(-not \\(Get-ChildItem 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' -ErrorAction SilentlyContinue\\)\\) { Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' })"
     ]
   }
 }

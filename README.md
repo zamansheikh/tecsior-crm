@@ -31,14 +31,15 @@ npm run dev      # starts the app on http://localhost:7010
 
 Open **http://localhost:7010** and sign in.
 
-## Demo login
+## Login
 
 ```
-maya@tecsior.studio  /  tecsior
+admin@tecsior.com  /  tecsior
 ```
 
-Every seeded team member can sign in with the password `tecsior`
-(e.g. `jin@tecsior.studio`, `aman@tecsior.studio`). Maya is the founder/admin.
+`admin@tecsior.com` is the default super admin (founder role). Every seeded
+team member can also sign in with the password `tecsior`
+(e.g. `maya@tecsior.com`, `jin@tecsior.com`, `aman@tecsior.com`).
 
 ## What works end-to-end
 

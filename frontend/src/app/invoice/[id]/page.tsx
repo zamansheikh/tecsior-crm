@@ -44,7 +44,7 @@ export default function InvoicePrintPage() {
             <div style={{ width: 44, height: 44, borderRadius: 10, background: "linear-gradient(135deg,#a855f7,#f472b6,#fbbf24)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 800, fontFamily: "'Inter Tight', sans-serif" }}>T</div>
             <div>
               <div style={{ fontSize: 20, fontWeight: 800, fontFamily: "'Inter Tight', sans-serif" }}>Tecsior Studio</div>
-              <div style={{ fontSize: 11.5, color: "#777" }}>Banani, Dhaka · hello@tecsior.studio</div>
+              <div style={{ fontSize: 11.5, color: "#777" }}>Banani, Dhaka · hello@tecsior.com</div>
             </div>
           </div>
           <div style={{ textAlign: "right" }}>

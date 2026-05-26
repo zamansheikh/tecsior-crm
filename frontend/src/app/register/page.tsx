@@ -49,7 +49,7 @@ export default function RegisterPage() {
         <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Alex Rivera" autoComplete="name" />
 
         <label style={label}>Email</label>
-        <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@tecsior.studio" autoComplete="email" />
+        <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@tecsior.com" autoComplete="email" />
 
         <label style={label}>Password</label>
         <input className="input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" autoComplete="new-password" />

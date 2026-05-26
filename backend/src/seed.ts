@@ -144,7 +144,7 @@ async function run() {
     assets: await collections.assets().countDocuments(),
   };
   console.log("✓ Seed complete:", counts);
-  console.log(`\n  Login → maya@tecsior.studio / ${DEFAULT_PASSWORD}\n`);
+  console.log(`\n  Login → admin@tecsior.com / ${DEFAULT_PASSWORD}\n`);
 
   await closeDb();
 }

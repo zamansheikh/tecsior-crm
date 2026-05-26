@@ -411,7 +411,7 @@ function InviteModal({ onClose, onInvited }: { onClose: () => void; onInvited: (
         <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Alex Rivera" autoFocus />
       </Field>
       <Field label="Email">
-        <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="alex@tecsior.studio" />
+        <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="alex@tecsior.com" />
       </Field>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <Field label="Job role">
