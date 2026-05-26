@@ -56,6 +56,12 @@ export default function InvoicesPage() {
     load();
   };
 
+  const removeInvoice = async (inv: Invoice) => {
+    if (!confirm(`Delete invoice ${inv.id}? Its ledger entries are removed too. This can't be undone.`)) return;
+    await api.invoices.remove(inv.id).catch(() => {});
+    load();
+  };
+
   const chips = ["all", "draft", "sent", "paid", "overdue"];
   const cols = "120px 1fr 96px 150px 120px 64px 132px";
 
@@ -130,6 +136,9 @@ export default function InvoicesPage() {
                 <a href={`/invoice/${inv.id}`} target="_blank" rel="noreferrer" className="btn btn-ghost btn-icon" title="View / PDF"><Icon d={I.download} size={13} /></a>
                 {canManage && inv.status !== "Paid" && (
                   <button className="btn btn-ghost btn-icon" title="Record payment" onClick={() => setPaying(inv)}><Icon d={I.dollar} size={13} color="var(--success)" /></button>
+                )}
+                {perms.admin && (
+                  <button className="btn btn-ghost btn-icon" title="Delete invoice" onClick={() => removeInvoice(inv)}><Icon d={I.trash} size={13} color="var(--danger)" /></button>
                 )}
               </div>
             </div>

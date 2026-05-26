@@ -199,6 +199,7 @@ export const api = {
     create: (body: { client: string; currency?: string; lines?: InvoiceLine[]; amount?: number; vatRate?: number; status?: string; dueIn?: string; notes?: string }) =>
       post<Invoice>("/invoices", body),
     update: (id: string, body: Partial<Invoice>) => patch<Invoice>(`/invoices/${id}`, body),
+    remove: (id: string) => del<{ ok: true }>(`/invoices/${id}`),
   },
   expenses: {
     list: (params?: { category?: string; project?: string; status?: string }) => {

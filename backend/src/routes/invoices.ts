@@ -3,7 +3,7 @@ import { z } from "zod";
 import { collections, cleanAll, clean } from "../db.js";
 import { requireAuth, requireRole } from "../lib/auth.js";
 import { asyncHandler, badRequest, notFound } from "../lib/http.js";
-import { postForInvoice } from "../lib/ledger.js";
+import { postForInvoice, unpost } from "../lib/ledger.js";
 import { assertOpen } from "../lib/closing.js";
 import type { Invoice, InvoiceLine } from "../types.js";
 
@@ -153,6 +153,21 @@ router.patch(
     );
     await postForInvoice(result!, req.user!.id).catch(() => {});
     res.json(clean(result!));
+  }),
+);
+
+router.delete(
+  "/:id",
+  requireRole("founder"),
+  asyncHandler(async (req, res) => {
+    const invoice = await collections.invoices().findOne({ id: req.params.id });
+    if (!invoice) throw notFound("Invoice not found");
+    // Don't alter a closed accounting period — its books are frozen.
+    await assertOpen(invoice.issued);
+    // Remove the invoice's ledger entries so the journal stays balanced.
+    await unpost("invoice", invoice.id);
+    await collections.invoices().deleteOne({ id: invoice.id });
+    res.json({ ok: true });
   }),
 );
 
