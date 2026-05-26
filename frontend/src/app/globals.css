@@ -189,6 +189,7 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   grid-template-columns: var(--sidebar-w, 236px) 1fr;
   height: 100vh;
+  height: 100dvh; /* dynamic viewport height — excludes mobile browser chrome */
   width: 100vw;
   overflow: hidden;
   position: relative;
@@ -281,6 +282,10 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 768px) {
   /* The sidebar becomes a slide-in overlay drawer toggled from the topbar. */
   .app-shell { grid-template-columns: 1fr; }
+
+  /* Breathing room at the end of every page so the last section clears the
+     browser's bottom chrome / any floating widget and is fully scrollable. */
+  .screen-scroll { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
   .app-sidebar {
     /* !important overrides the component's inline position:relative / zIndex. */
     position: fixed !important;
@@ -332,6 +337,8 @@ a { color: inherit; text-decoration: none; }
     padding: 14px 16px !important;
   }
   .rt-row > * { display: block !important; min-width: 0 !important; padding: 3px 0; text-align: left !important; }
+  /* Action buttons (view / pay / delete) regain spacing in card mode. */
+  .rt-row .btn-icon { margin: 2px 8px 2px 0; }
   .rt-row > *[data-label]::before {
     content: attr(data-label);
     display: block;
@@ -383,6 +390,48 @@ a { color: inherit; text-decoration: none; }
     vertical-align: middle;
     margin: 6px 14px 0 0;
   }
+
+  /* Modals: use (almost) the full screen and sit near the top so long forms
+     are reachable above the keyboard, instead of a cramped centered box. */
+  .modal-overlay { padding: 10px !important; align-items: flex-start !important; }
+  .modal-card { width: 100% !important; max-width: 100% !important; max-height: 95vh !important; margin: 0 !important; }
+
+  /* Invoices: a richer compact card instead of a long label/value stack.
+     Layout — [invoice # ........ status] / client / TOTAL / issued · due / actions */
+  .inv-card {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    margin: 10px 12px !important;
+    padding: 14px !important;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-solid);
+  }
+  .inv-card > * { display: inline-flex !important; align-items: center; width: auto !important; padding: 0 !important; min-width: 0; }
+  .inv-card > *::before { content: none !important; }
+  .inv-card > [data-label="Invoice"] { order: 1; margin-right: auto; font-weight: 700; }
+  .inv-card > [data-label="Status"]  { order: 2; }
+  .inv-card > [data-label="Client"]  { order: 3; flex-basis: 100%; }
+  .inv-card > [data-label="Total"],
+  .inv-card > [data-label="Amount"]  { order: 4; flex-basis: 100%; display: block !important; margin: 2px 0; }
+  .inv-card > [data-label="Total"] > div:first-child,
+  .inv-card > [data-label="Amount"] { font-size: 18px; }
+  .inv-card > [data-label="Issued"]  { order: 5; }
+  .inv-card > [data-label="Due"]     { order: 6; }
+  .inv-card > [data-label="Issued"]::before,
+  .inv-card > [data-label="Due"]::before {
+    content: attr(data-label) " ";
+    display: inline !important;
+    color: var(--text-dim);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    font-weight: 600;
+    margin-right: 5px;
+  }
+  .inv-card > div:last-child { order: 7; flex-basis: 100%; margin-top: 8px; }
 }
 
 @media (max-width: 440px) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { Icon, I } from "./primitives";
 
 export function Modal({
@@ -21,10 +22,15 @@ export function Modal({
   // would fire a click on the backdrop and wrongly close the modal.
   const downOnBackdrop = useRef(false);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  // Portal to <body> so the overlay escapes the app shell's stacking context
+  // (otherwise the top bar / screen-scroll layers render on top of it).
+  return createPortal(
     // Flex-centered overlay. Centering lives on this wrapper (not a transform),
     // so the inner card's fade-up animation can't knock it off-center.
     <div
+      className="modal-overlay"
       onMouseDown={(e) => {
         downOnBackdrop.current = e.target === e.currentTarget;
       }}
@@ -48,7 +54,7 @@ export function Modal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="surface-frosted fade-up"
+        className="surface-frosted fade-up modal-card"
         style={{
           width,
           maxWidth: "92vw",
@@ -70,7 +76,8 @@ export function Modal({
         </div>
         <div style={{ padding: 20 }}>{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

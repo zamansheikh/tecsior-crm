@@ -212,7 +212,7 @@ export default function ClientsPage() {
             const c = clientById[inv.client];
             const statusColor = inv.status === "Paid" ? "var(--success)" : inv.status === "Overdue" ? "var(--danger)" : "var(--info)";
             return (
-              <div key={inv.id} className="rt-row" style={{ display: "grid", gridTemplateColumns: "120px 1fr 90px 90px 90px", gap: 12, padding: "11px 18px", borderTop: "1px solid var(--border)", alignItems: "center" }}>
+              <div key={inv.id} className="rt-row inv-card" style={{ display: "grid", gridTemplateColumns: "120px 1fr 90px 90px 90px", gap: 12, padding: "11px 18px", borderTop: "1px solid var(--border)", alignItems: "center" }}>
                 <span className="mono" data-label="Invoice" style={{ fontSize: 11.5, color: "var(--accent-soft)", letterSpacing: 0.4 }}>{inv.id}</span>
                 <div data-label="Client" style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
                   {c && <span style={{ width: 24, height: 24, borderRadius: 5, background: `color-mix(in oklab, ${c.color} 22%, var(--surface-hi))`, color: c.color, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, fontFamily: "'Inter Tight', sans-serif", border: `1px solid color-mix(in oklab, ${c.color} 30%, transparent)` }}>{c.logo}</span>}
