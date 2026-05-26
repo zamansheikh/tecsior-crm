@@ -16,6 +16,7 @@ import {
 } from "@/components/primitives";
 import { Modal, Field } from "@/components/modal";
 import { DateField } from "@/components/date-field";
+import { TeamPicker } from "@/components/team-picker";
 import { useApp } from "@/providers/app";
 import { api, ApiError } from "@/lib/api";
 import { fmtBytes, readFileAsDataUrl, money } from "@/lib/format";
@@ -431,6 +432,8 @@ function EditProjectModal({
   const [budget, setBudget] = useState(project.budget);
   const [tags, setTags] = useState(project.tags.join(", "));
   const [statusLabel, setStatusLabel] = useState(project.status.label);
+  const [team, setTeam] = useState<string[]>(project.team ?? []);
+  const [lead, setLead] = useState(project.lead ?? "");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -457,6 +460,8 @@ function EditProjectModal({
         budget,
         tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
         status,
+        team,
+        lead: lead || undefined,
       });
       onSaved(up);
     } catch (e) {
@@ -493,6 +498,9 @@ function EditProjectModal({
         <Field label="Deadline"><DateField value={deadline} onChange={setDeadline} placeholder="Pick a deadline" /></Field>
         <Field label="Tags"><input className="input" value={tags} onChange={(e) => setTags(e.target.value)} /></Field>
       </div>
+      <Field label="Team (★ marks the lead)">
+        <TeamPicker team={team} lead={lead} onChange={({ team, lead }) => { setTeam(team); setLead(lead); }} />
+      </Field>
       {err && <div style={{ fontSize: 12, color: "var(--danger)", marginBottom: 10 }}>{err}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
         <button className="btn btn-ghost" onClick={onClose}>Cancel</button>

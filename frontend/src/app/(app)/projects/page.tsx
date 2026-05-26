@@ -12,6 +12,7 @@ import {
 } from "@/components/primitives";
 import { Modal, Field } from "@/components/modal";
 import { DateField } from "@/components/date-field";
+import { TeamPicker } from "@/components/team-picker";
 import { useApp } from "@/providers/app";
 import { api, ApiError } from "@/lib/api";
 import { exportCsv } from "@/lib/export";
@@ -225,12 +226,15 @@ function NewProjectModal({
   onClose: () => void;
   onCreated: (p: Project) => void;
 }) {
+  const { user } = useApp();
   const [name, setName] = useState("");
   const [client, setClient] = useState(clients[0]?.id ?? "");
   const [priority, setPriority] = useState("Medium");
   const [deadline, setDeadline] = useState("");
   const [budget, setBudget] = useState(200);
   const [tags, setTags] = useState("");
+  const [team, setTeam] = useState<string[]>([user.id]);
+  const [lead, setLead] = useState(user.id);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -245,6 +249,8 @@ function NewProjectModal({
         deadline: deadline || undefined,
         budget,
         tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
+        team,
+        lead: lead || undefined,
       });
       onCreated(p);
     } catch (e) {
@@ -280,6 +286,9 @@ function NewProjectModal({
       </div>
       <Field label="Tags (comma separated)">
         <input className="input" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="api, redesign" />
+      </Field>
+      <Field label="Team (★ marks the lead)">
+        <TeamPicker team={team} lead={lead} onChange={({ team, lead }) => { setTeam(team); setLead(lead); }} />
       </Field>
       {err && <div style={{ fontSize: 12, color: "var(--danger)", marginBottom: 10 }}>{err}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
