@@ -1,11 +1,13 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Sidebar, TopBar } from "./chrome";
 import { TaskDrawer } from "./task-drawer";
 import { CommandPalette } from "./command-palette";
 import { useApp } from "@/providers/app";
 import { TimerProvider } from "@/providers/timer";
+import { navAccess, routeKey } from "@/lib/nav-access";
 
 function useCrumbs(): string[] {
   const pathname = usePathname();
@@ -32,7 +34,17 @@ function useCrumbs(): string[] {
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const crumbs = useCrumbs();
-  const { taskOpenId, closeTask } = useApp();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { taskOpenId, closeTask, perms, role } = useApp();
+
+  // Guard: if the current role can't see this section, bounce to the dashboard.
+  // Keeps hidden pages truly inaccessible, not just hidden from the sidebar.
+  const key = routeKey(pathname);
+  const blocked = key ? !navAccess(perms, role)[key] : false;
+  useEffect(() => {
+    if (blocked) router.replace("/dashboard");
+  }, [blocked, router]);
 
   return (
     <TimerProvider>
@@ -40,7 +52,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <Sidebar />
         <main style={{ display: "flex", flexDirection: "column", minWidth: 0, position: "relative", overflow: "hidden" }}>
           <TopBar crumbs={crumbs} />
-          <div className="screen-scroll">{children}</div>
+          <div className="screen-scroll">{blocked ? null : children}</div>
         </main>
 
         {taskOpenId && <TaskDrawer taskId={taskOpenId} onClose={closeTask} />}

@@ -8,6 +8,7 @@ import { NotificationsBell } from "./notifications";
 import { useApp } from "@/providers/app";
 import { api } from "@/lib/api";
 import { openSearch } from "@/lib/search-bus";
+import { navAccess } from "@/lib/nav-access";
 import type { AppRole } from "@/lib/types";
 
 const NavItem = ({
@@ -101,15 +102,24 @@ const NavGroup = ({ label, collapsed, children }: { label: string; collapsed?: b
 );
 
 export function Sidebar() {
-  const { tweak, setTweak, user, team, projects } = useApp();
+  const { tweak, setTweak, user, team, projects, perms, role } = useApp();
   const pathname = usePathname();
   const collapsed = tweak.sidebar === "collapsed";
-  const modules = {
-    invoices: tweak.showInvoices,
-    reports: tweak.showReports,
-    time: tweak.showTime,
-    clients: tweak.showClients,
+  // Hard role gate (navAccess) combined with the user's own soft toggles (tweak).
+  const access = navAccess(perms, role);
+  const show = {
+    tasks: access.tasks,
+    time: access.time && tweak.showTime !== false,
+    clients: access.clients && tweak.showClients !== false,
+    team: access.team,
+    invoices: access.invoices && tweak.showInvoices !== false,
+    expenses: access.expenses,
+    accounting: access.accounting,
+    assets: access.assets,
+    reports: access.reports && tweak.showReports !== false,
+    audit: access.audit,
   };
+  const operate = show.invoices || show.expenses || show.accounting || show.assets || show.reports;
   const is = (p: string) => pathname === p || (p !== "/dashboard" && pathname.startsWith(p));
   const taskCount = projects.reduce((s, p) => s + p.tasksOpen, 0);
 
@@ -201,32 +211,42 @@ export function Sidebar() {
         <NavGroup collapsed={collapsed} label="Workspace">
           <NavItem collapsed={collapsed} active={pathname === "/dashboard"} href="/dashboard" label="Dashboard" icon={<Icon d={I.dashboard} />} />
           <NavItem collapsed={collapsed} active={is("/projects")} href="/projects" label="Projects" icon={<Icon d={I.projects} />} badge={String(projects.length)} />
-          <NavItem collapsed={collapsed} active={is("/tasks")} href="/tasks" label="Tasks" icon={<Icon d={I.tasks} />} badge={String(taskCount)} />
-          {modules.time !== false && (
+          {show.tasks && (
+            <NavItem collapsed={collapsed} active={is("/tasks")} href="/tasks" label="Tasks" icon={<Icon d={I.tasks} />} badge={String(taskCount)} />
+          )}
+          {show.time && (
             <NavItem collapsed={collapsed} active={is("/time")} href="/time" label="Time tracking" icon={<Icon d={I.time} />} badge="LIVE" badgeColor="var(--success)" />
           )}
-          {modules.clients !== false && (
-            <NavItem collapsed={collapsed} active={is("/clients")} href="/clients" label="Clients" icon={<Icon d={I.clients} />} badge="08" />
+          {show.clients && (
+            <NavItem collapsed={collapsed} active={is("/clients")} href="/clients" label="Clients" icon={<Icon d={I.clients} />} />
           )}
-          <NavItem collapsed={collapsed} active={is("/team")} href="/team" label="Team" icon={<Icon d={I.team} />} badge={String(team.length)} />
+          {show.team && (
+            <NavItem collapsed={collapsed} active={is("/team")} href="/team" label="Team" icon={<Icon d={I.team} />} badge={String(team.length)} />
+          )}
         </NavGroup>
 
-        {(modules.invoices !== false || modules.reports !== false) && (
+        {operate && (
           <NavGroup collapsed={collapsed} label="Operate">
-            {modules.invoices !== false && (
-              <NavItem collapsed={collapsed} active={is("/invoices")} href="/invoices" label="Invoices" icon={<Icon d={I.invoices} />} badge="07" />
+            {show.invoices && (
+              <NavItem collapsed={collapsed} active={is("/invoices")} href="/invoices" label="Invoices" icon={<Icon d={I.invoices} />} />
             )}
-            <NavItem collapsed={collapsed} active={is("/expenses")} href="/expenses" label="Expenses" icon={<Icon d={I.dollar} />} />
-            <NavItem collapsed={collapsed} active={is("/accounting")} href="/accounting" label="Accounting" icon={<Icon d={I.layers} />} />
-            <NavItem collapsed={collapsed} active={is("/assets")} href="/assets" label="Fixed Assets" icon={<Icon d={I.archive} />} />
-            {modules.reports !== false && (
+            {show.expenses && (
+              <NavItem collapsed={collapsed} active={is("/expenses")} href="/expenses" label="Expenses" icon={<Icon d={I.dollar} />} />
+            )}
+            {show.accounting && (
+              <NavItem collapsed={collapsed} active={is("/accounting")} href="/accounting" label="Accounting" icon={<Icon d={I.layers} />} />
+            )}
+            {show.assets && (
+              <NavItem collapsed={collapsed} active={is("/assets")} href="/assets" label="Fixed Assets" icon={<Icon d={I.archive} />} />
+            )}
+            {show.reports && (
               <NavItem collapsed={collapsed} active={is("/reports")} href="/reports" label="Reports" icon={<Icon d={I.reports} />} />
             )}
           </NavGroup>
         )}
 
         <NavGroup collapsed={collapsed} label="System">
-          {user.appRole !== "dev" && (
+          {show.audit && (
             <NavItem collapsed={collapsed} active={is("/audit")} href="/audit" label="Audit log" icon={<Icon d={I.lock} />} />
           )}
           <NavItem collapsed={collapsed} active={is("/settings")} href="/settings" label="Settings" icon={<Icon d={I.settings} />} />
