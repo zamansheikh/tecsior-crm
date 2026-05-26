@@ -13,6 +13,7 @@ import {
 import { Modal, Field } from "@/components/modal";
 import { DateField } from "@/components/date-field";
 import { TeamPicker } from "@/components/team-picker";
+import { GradientPicker } from "@/components/color-picker";
 import { useApp } from "@/providers/app";
 import { api, ApiError } from "@/lib/api";
 import { exportCsv } from "@/lib/export";
@@ -235,6 +236,7 @@ function NewProjectModal({
   const [tags, setTags] = useState("");
   const [team, setTeam] = useState<string[]>([user.id]);
   const [lead, setLead] = useState(user.id);
+  const [accent, setAccent] = useState<[string, string]>(["#a855f7", "#f472b6"]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -251,6 +253,7 @@ function NewProjectModal({
         tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
         team,
         lead: lead || undefined,
+        accent,
       });
       onCreated(p);
     } catch (e) {
@@ -289,6 +292,9 @@ function NewProjectModal({
       </Field>
       <Field label="Team (★ marks the lead)">
         <TeamPicker team={team} lead={lead} onChange={({ team, lead }) => { setTeam(team); setLead(lead); }} />
+      </Field>
+      <Field label="Accent">
+        <GradientPicker value={accent} onChange={setAccent} />
       </Field>
       {err && <div style={{ fontSize: 12, color: "var(--danger)", marginBottom: 10 }}>{err}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>

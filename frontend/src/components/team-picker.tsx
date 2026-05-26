@@ -32,10 +32,41 @@ export function TeamPicker({
     onChange({ team: team.includes(id) ? team : [...team, id], lead: id });
   };
 
+  return <MemberChips members={members} selected={team} lead={lead} onToggle={toggle} onMakeLead={makeLead} />;
+}
+
+// Plain member multi-select — no lead concept. Used for task assignees.
+export function MemberMultiSelect({
+  value,
+  onChange,
+}: {
+  value: string[];
+  onChange: (ids: string[]) => void;
+}) {
+  const { team: members } = useApp();
+  const toggle = (id: string) =>
+    onChange(value.includes(id) ? value.filter((x) => x !== id) : [...value, id]);
+  return <MemberChips members={members} selected={value} onToggle={toggle} />;
+}
+
+// Shared chip row used by both pickers above.
+function MemberChips({
+  members,
+  selected,
+  lead,
+  onToggle,
+  onMakeLead,
+}: {
+  members: { id: string; name: string; bg?: string }[];
+  selected: string[];
+  lead?: string;
+  onToggle: (id: string) => void;
+  onMakeLead?: (id: string) => void;
+}) {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
       {members.map((m) => {
-        const selected = team.includes(m.id);
+        const isSelected = selected.includes(m.id);
         const isLead = lead === m.id;
         return (
           <div
@@ -46,26 +77,26 @@ export function TeamPicker({
               gap: 5,
               padding: "3px 6px 3px 3px",
               borderRadius: 99,
-              border: `1px solid ${selected ? "var(--accent)" : "var(--border)"}`,
-              background: selected ? "color-mix(in oklab, var(--accent) 14%, transparent)" : "var(--surface-solid)",
+              border: `1px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
+              background: isSelected ? "color-mix(in oklab, var(--accent) 14%, transparent)" : "var(--surface-solid)",
               fontSize: 11,
-              color: selected ? "var(--text)" : "var(--text-sub)",
+              color: isSelected ? "var(--text)" : "var(--text-sub)",
             }}
           >
             <button
               type="button"
-              onClick={() => toggle(m.id)}
-              title={selected ? `Remove ${m.name}` : `Add ${m.name}`}
+              onClick={() => onToggle(m.id)}
+              title={isSelected ? `Remove ${m.name}` : `Add ${m.name}`}
               style={{ display: "flex", alignItems: "center", gap: 5, background: "none", border: "none", cursor: "pointer", color: "inherit", font: "inherit", padding: 0 }}
             >
               <Avatar name={m.name} bg={m.bg} size={18} ring={isLead ? "var(--accent)" : undefined} />
               {m.name.split(" ")[0]}
-              {selected && <Icon d={I.check} size={11} color="var(--accent-soft)" />}
+              {isSelected && <Icon d={I.check} size={11} color="var(--accent-soft)" />}
             </button>
-            {selected && (
+            {isSelected && onMakeLead && (
               <button
                 type="button"
-                onClick={() => makeLead(m.id)}
+                onClick={() => onMakeLead(m.id)}
                 title={isLead ? "Project lead" : "Set as lead"}
                 style={{ display: "inline-flex", alignItems: "center", background: "none", border: "none", cursor: "pointer", padding: 0, opacity: isLead ? 1 : 0.4 }}
               >

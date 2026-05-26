@@ -17,6 +17,7 @@ import {
 import { Modal, Field } from "@/components/modal";
 import { DateField } from "@/components/date-field";
 import { TeamPicker } from "@/components/team-picker";
+import { GradientPicker } from "@/components/color-picker";
 import { useApp } from "@/providers/app";
 import { api, ApiError } from "@/lib/api";
 import { fmtBytes, readFileAsDataUrl, money } from "@/lib/format";
@@ -428,12 +429,14 @@ function EditProjectModal({
   const [client, setClient] = useState(project.client);
   const [priority, setPriority] = useState<Priority>(project.priority);
   const [deadline, setDeadline] = useState(project.deadline);
+  const [start, setStart] = useState(project.start === "—" ? "" : project.start);
   const [pct, setPct] = useState(project.pct);
   const [budget, setBudget] = useState(project.budget);
   const [tags, setTags] = useState(project.tags.join(", "));
   const [statusLabel, setStatusLabel] = useState(project.status.label);
   const [team, setTeam] = useState<string[]>(project.team ?? []);
   const [lead, setLead] = useState(project.lead ?? "");
+  const [accent, setAccent] = useState<[string, string]>(project.accent ?? ["#a855f7", "#f472b6"]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -460,8 +463,10 @@ function EditProjectModal({
         budget,
         tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
         status,
+        start: start || undefined,
         team,
         lead: lead || undefined,
+        accent,
       });
       onSaved(up);
     } catch (e) {
@@ -495,11 +500,15 @@ function EditProjectModal({
         <Field label="Budget (h)"><input className="input" type="number" value={budget} onChange={(e) => setBudget(Number(e.target.value))} /></Field>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <Field label="Start"><DateField value={start} onChange={setStart} placeholder="Pick a start date" /></Field>
         <Field label="Deadline"><DateField value={deadline} onChange={setDeadline} placeholder="Pick a deadline" /></Field>
-        <Field label="Tags"><input className="input" value={tags} onChange={(e) => setTags(e.target.value)} /></Field>
       </div>
+      <Field label="Tags"><input className="input" value={tags} onChange={(e) => setTags(e.target.value)} /></Field>
       <Field label="Team (★ marks the lead)">
         <TeamPicker team={team} lead={lead} onChange={({ team, lead }) => { setTeam(team); setLead(lead); }} />
+      </Field>
+      <Field label="Accent">
+        <GradientPicker value={accent} onChange={setAccent} />
       </Field>
       {err && <div style={{ fontSize: 12, color: "var(--danger)", marginBottom: 10 }}>{err}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>

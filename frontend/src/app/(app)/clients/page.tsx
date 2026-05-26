@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon, I, Avatar, Eyebrow, StatusPill, SectionHeader } from "@/components/primitives";
 import { Modal, Field } from "@/components/modal";
+import { ColorPicker } from "@/components/color-picker";
 import { useApp } from "@/providers/app";
 import { api, ApiError } from "@/lib/api";
 import { exportCsv } from "@/lib/export";
@@ -245,6 +246,7 @@ function EditClientModal({ client, onClose, onSaved }: { client: Client; onClose
   const [mrr, setMrr] = useState(client.mrr);
   const [billed, setBilled] = useState(client.billed);
   const [outstanding, setOutstanding] = useState(client.outstanding);
+  const [color, setColor] = useState(client.color);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const sym = currency === "BDT" ? "৳" : "$";
@@ -253,7 +255,7 @@ function EditClientModal({ client, onClose, onSaved }: { client: Client; onClose
     setErr(null);
     setBusy(true);
     try {
-      await api.clients.update(client.id, { name, industry, contact, tier, currency, mrr, billed, outstanding });
+      await api.clients.update(client.id, { name, industry, contact, tier, currency, mrr, billed, outstanding, color });
       onSaved();
     } catch (e) {
       setErr(e instanceof ApiError ? e.message : "Could not save client");
@@ -286,6 +288,7 @@ function EditClientModal({ client, onClose, onSaved }: { client: Client; onClose
         <Field label={`Billed (${sym})`}><input className="input" type="number" value={billed} onChange={(e) => setBilled(Number(e.target.value))} /></Field>
         <Field label={`Outstanding (${sym})`}><input className="input" type="number" value={outstanding} onChange={(e) => setOutstanding(Number(e.target.value))} /></Field>
       </div>
+      <Field label="Card color"><ColorPicker value={color} onChange={setColor} /></Field>
       {err && <div style={{ fontSize: 12, color: "var(--danger)", marginBottom: 10 }}>{err}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
         <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
@@ -302,6 +305,7 @@ function NewClientModal({ onClose, onCreated }: { onClose: () => void; onCreated
   const [tier, setTier] = useState("Silver");
   const [currency, setCurrency] = useState<"BDT" | "USD">("USD");
   const [mrr, setMrr] = useState(5000);
+  const [color, setColor] = useState("#a855f7");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -309,7 +313,7 @@ function NewClientModal({ onClose, onCreated }: { onClose: () => void; onCreated
     setErr(null);
     setBusy(true);
     try {
-      await api.clients.create({ name, industry, contact, tier: tier as Client["tier"], currency, mrr });
+      await api.clients.create({ name, industry, contact, tier: tier as Client["tier"], currency, mrr, color });
       onCreated();
     } catch (e) {
       setErr(e instanceof ApiError ? e.message : "Could not add client");
@@ -346,6 +350,7 @@ function NewClientModal({ onClose, onCreated }: { onClose: () => void; onCreated
       <Field label={`MRR (${currency === "BDT" ? "৳" : "$"})`}>
         <input className="input" type="number" value={mrr} onChange={(e) => setMrr(Number(e.target.value))} />
       </Field>
+      <Field label="Card color"><ColorPicker value={color} onChange={setColor} /></Field>
       {err && <div style={{ fontSize: 12, color: "var(--danger)", marginBottom: 10 }}>{err}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
         <button className="btn btn-ghost" onClick={onClose}>Cancel</button>

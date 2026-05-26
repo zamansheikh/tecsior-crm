@@ -195,6 +195,7 @@ function NewInvoiceModal({
   const [vatRate, setVatRate] = useState(15);
   const [status, setStatus] = useState<Invoice["status"]>("Draft");
   const [dueIn, setDueIn] = useState("30d");
+  const [notes, setNotes] = useState("");
   const [lines, setLines] = useState<InvoiceLine[]>([{ description: "", qty: 1, rate: 0 }]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -214,7 +215,7 @@ function NewInvoiceModal({
     if (!clean.length) { setErr("Add at least one line item"); return; }
     setBusy(true);
     try {
-      await api.invoices.create({ client, currency, vatRate, status, dueIn, lines: clean });
+      await api.invoices.create({ client, currency, vatRate, status, dueIn, lines: clean, notes: notes.trim() || undefined });
       onCreated();
     } catch (e) {
       setErr(e instanceof ApiError ? e.message : "Could not create invoice");
@@ -264,6 +265,10 @@ function NewInvoiceModal({
         </Field>
         <Field label="Due in"><input className="input" value={dueIn} onChange={(e) => setDueIn(e.target.value)} placeholder="30d" /></Field>
       </div>
+
+      <Field label="Notes (optional)">
+        <textarea className="input" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Payment terms, PO number, thank-you note…" rows={2} style={{ resize: "vertical", minHeight: 52 }} />
+      </Field>
 
       <div style={{ padding: "10px 12px", borderRadius: 8, background: "var(--surface)", border: "1px solid var(--border)", marginBottom: 12, display: "flex", flexDirection: "column", gap: 4 }}>
         <Row k="Subtotal" v={money(subtotal, currency, false)} />

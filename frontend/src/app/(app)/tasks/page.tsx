@@ -11,6 +11,7 @@ import {
 } from "@/components/primitives";
 import { Modal, Field } from "@/components/modal";
 import { DateField } from "@/components/date-field";
+import { MemberMultiSelect } from "@/components/team-picker";
 import { useApp } from "@/providers/app";
 import { api, ApiError } from "@/lib/api";
 import type { Task, TaskStatus, Priority } from "@/lib/types";
@@ -311,12 +312,14 @@ function NewTaskModal({
   onClose: () => void;
   onCreated: () => void;
 }) {
+  const { user } = useApp();
   const [title, setTitle] = useState("");
   const [project, setProject] = useState(projects[0]?.id ?? "");
   const [status, setStatus] = useState<TaskStatus>("todo");
   const [priority, setPriority] = useState<Priority>("Medium");
   const [est, setEst] = useState(4);
   const [due, setDue] = useState("");
+  const [assignees, setAssignees] = useState<string[]>([user.id]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -324,7 +327,7 @@ function NewTaskModal({
     setErr(null);
     setBusy(true);
     try {
-      await api.tasks.create({ title, project, status, priority, est, due: due || undefined });
+      await api.tasks.create({ title, project, status, priority, est, due: due || undefined, assignees });
       onCreated();
     } catch (e) {
       setErr(e instanceof ApiError ? e.message : "Could not create task");
@@ -362,6 +365,9 @@ function NewTaskModal({
           <DateField value={due} onChange={setDue} placeholder="Pick a due date" />
         </Field>
       </div>
+      <Field label="Assignees">
+        <MemberMultiSelect value={assignees} onChange={setAssignees} />
+      </Field>
       {err && <div style={{ fontSize: 12, color: "var(--danger)", marginBottom: 10 }}>{err}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
         <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
