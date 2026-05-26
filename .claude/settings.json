@@ -114,7 +114,9 @@
       "PowerShell(Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\check.ts','F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\add-admin.ts'; if \\(-not \\(Get-ChildItem 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' -ErrorAction SilentlyContinue\\)\\) { Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' })",
       "Bash(xargs grep -l \"team\")",
       "Bash(Get-ChildItem -Path \"f:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\routes\" -Filter \"*.ts\")",
-      "Bash(Select-Object -ExpandProperty FullName)"
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "PowerShell(Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\fresh-start.ts'; if \\(-not \\(Get-ChildItem 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' -ErrorAction SilentlyContinue\\)\\) { Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' })",
+      "PowerShell(Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\seed-coa.ts'; if \\(-not \\(Get-ChildItem 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' -ErrorAction SilentlyContinue\\)\\) { Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' })"
     ]
   }
 }

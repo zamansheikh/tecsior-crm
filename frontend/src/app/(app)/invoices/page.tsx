@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Icon, I, Eyebrow, StatusPill, SectionHeader } from "@/components/primitives";
 import { Modal, Field } from "@/components/modal";
+import { DateField } from "@/components/date-field";
 import { useApp } from "@/providers/app";
 import { api, ApiError } from "@/lib/api";
 import { money } from "@/lib/format";
@@ -181,6 +182,24 @@ function PaymentModal({ invoice, onClose, onPaid }: { invoice: Invoice; onClose:
   );
 }
 
+// Net payment terms → an actual due date, computed from "today" (May 26 2026,
+// the app's fixed clock) so users pick terms instead of typing raw "30d".
+const DUE_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const dueDateInDays = (days: number) => {
+  const d = new Date(2026, 4, 26);
+  d.setDate(d.getDate() + days);
+  return `${DUE_MONTHS[d.getMonth()]} ${String(d.getDate()).padStart(2, "0")}`;
+};
+const TERMS: [string, string][] = [
+  ["0", "Due on receipt"],
+  ["7", "Net 7"],
+  ["15", "Net 15"],
+  ["30", "Net 30"],
+  ["45", "Net 45"],
+  ["60", "Net 60"],
+  ["custom", "Custom date"],
+];
+
 function NewInvoiceModal({
   clients,
   onClose,
@@ -194,8 +213,12 @@ function NewInvoiceModal({
   const [currency, setCurrency] = useState<Currency>("BDT");
   const [vatRate, setVatRate] = useState(15);
   const [status, setStatus] = useState<Invoice["status"]>("Draft");
-  const [dueIn, setDueIn] = useState("30d");
+  const [term, setTerm] = useState("30");
+  const [dueIn, setDueIn] = useState(() => dueDateInDays(30)); // stored as a real date string
   const [notes, setNotes] = useState("");
+  // "fixed" = bill the project/milestones (description + amount, no hours).
+  // "hourly" = itemized qty × rate (for hourly contractors or detailed billing).
+  const [mode, setMode] = useState<"fixed" | "hourly">("fixed");
   const [lines, setLines] = useState<InvoiceLine[]>([{ description: "", qty: 1, rate: 0 }]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -208,6 +231,16 @@ function NewInvoiceModal({
     setLines((prev) => prev.map((l, j) => (j === i ? { ...l, ...patch } : l)));
   const addLine = () => setLines((prev) => [...prev, { description: "", qty: 1, rate: 0 }]);
   const removeLine = (i: number) => setLines((prev) => prev.filter((_, j) => j !== i));
+
+  // Switching mode collapses/keeps each line so totals never change unexpectedly.
+  // Fixed price stores the whole line amount in `rate` with qty fixed at 1.
+  const switchMode = (next: "fixed" | "hourly") => {
+    if (next === mode) return;
+    if (next === "fixed") {
+      setLines((prev) => prev.map((l) => ({ description: l.description, qty: 1, rate: Math.round((Number(l.qty) || 0) * (Number(l.rate) || 0)) })));
+    }
+    setMode(next);
+  };
 
   const submit = async () => {
     setErr(null);
@@ -224,7 +257,7 @@ function NewInvoiceModal({
   };
 
   return (
-    <Modal title="New invoice" subtitle="Line items, VAT, and currency" onClose={onClose} width={620}>
+    <Modal title="New invoice" subtitle="Fixed-price, milestones, or itemized billing" onClose={onClose} width={620}>
       <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr", gap: 12 }}>
         <Field label="Client">
           <select className="input" value={client} onChange={(e) => setClient(e.target.value)}>
@@ -240,30 +273,90 @@ function NewInvoiceModal({
         <Field label="VAT %"><input className="input" type="number" value={vatRate} onChange={(e) => setVatRate(Number(e.target.value))} /></Field>
       </div>
 
-      <label style={{ fontSize: 11, color: "var(--text-sub)", fontWeight: 600, display: "block", marginBottom: 6 }}>Line items</label>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 10 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 60px 90px 90px 28px", gap: 8 }}>
-          <Eyebrow size={9}>Description</Eyebrow><Eyebrow size={9}>Qty</Eyebrow><Eyebrow size={9}>Rate</Eyebrow><Eyebrow size={9}>Amount</Eyebrow><span />
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+        <label style={{ fontSize: 11, color: "var(--text-sub)", fontWeight: 600 }}>Billing</label>
+        <div style={{ display: "flex", gap: 0, border: "1px solid var(--border)", borderRadius: 7, overflow: "hidden" }}>
+          {([["fixed", "Fixed price / milestones"], ["hourly", "Itemized / hourly"]] as const).map(([m, lbl]) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => switchMode(m)}
+              style={{
+                fontSize: 11,
+                padding: "5px 10px",
+                border: "none",
+                cursor: "pointer",
+                color: mode === m ? "#fff" : "var(--text-sub)",
+                background: mode === m ? "var(--accent-grad)" : "transparent",
+                fontWeight: mode === m ? 600 : 400,
+              }}
+            >
+              {lbl}
+            </button>
+          ))}
         </div>
-        {lines.map((l, i) => (
-          <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 60px 90px 90px 28px", gap: 8, alignItems: "center" }}>
-            <input className="input" value={l.description} onChange={(e) => setLine(i, { description: e.target.value })} placeholder="Development — 40h" style={{ padding: "6px 9px", fontSize: 12 }} />
-            <input className="input" type="number" value={l.qty} onChange={(e) => setLine(i, { qty: Number(e.target.value) })} style={{ padding: "6px 9px", fontSize: 12 }} />
-            <input className="input" type="number" value={l.rate} onChange={(e) => setLine(i, { rate: Number(e.target.value) })} style={{ padding: "6px 9px", fontSize: 12 }} />
-            <span style={{ fontSize: 12, color: "var(--text)", fontFamily: "'Geist Mono', monospace", textAlign: "right" }}>{money((Number(l.qty) || 0) * (Number(l.rate) || 0), currency, false)}</span>
-            <button className="btn btn-ghost btn-icon" style={{ width: 24, height: 24 }} onClick={() => removeLine(i)} disabled={lines.length === 1}><Icon d={I.x} size={11} /></button>
-          </div>
-        ))}
-        <button className="btn btn-ghost" style={{ fontSize: 11.5, justifyContent: "flex-start", padding: "4px 6px", width: "fit-content" }} onClick={addLine}><Icon d={I.plus} size={11} /> Add line</button>
+      </div>
+      <div style={{ fontSize: 11, color: "var(--text-dim)", marginBottom: 8 }}>
+        {mode === "fixed"
+          ? "Bill the project as a fixed fee, or split it into milestones. One line = one charge."
+          : "Bill by quantity × rate — e.g. hours for an hourly contractor."}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 10 }}>
+        {mode === "fixed" ? (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 110px 28px", gap: 8 }}>
+              <Eyebrow size={9}>Description</Eyebrow><Eyebrow size={9}>Amount</Eyebrow><span />
+            </div>
+            {lines.map((l, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 110px 28px", gap: 8, alignItems: "center" }}>
+                <input className="input" value={l.description} onChange={(e) => setLine(i, { description: e.target.value })} placeholder={lines.length > 1 ? `Milestone ${i + 1}` : "Project fee — fixed scope"} style={{ padding: "6px 9px", fontSize: 12 }} />
+                <input className="input" type="number" value={l.rate} onChange={(e) => setLine(i, { rate: Number(e.target.value) })} placeholder="0" style={{ padding: "6px 9px", fontSize: 12 }} />
+                <button className="btn btn-ghost btn-icon" style={{ width: 24, height: 24 }} onClick={() => removeLine(i)} disabled={lines.length === 1}><Icon d={I.x} size={11} /></button>
+              </div>
+            ))}
+            <button className="btn btn-ghost" style={{ fontSize: 11.5, justifyContent: "flex-start", padding: "4px 6px", width: "fit-content" }} onClick={addLine}><Icon d={I.plus} size={11} /> Add milestone</button>
+          </>
+        ) : (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 60px 90px 90px 28px", gap: 8 }}>
+              <Eyebrow size={9}>Description</Eyebrow><Eyebrow size={9}>Qty</Eyebrow><Eyebrow size={9}>Rate</Eyebrow><Eyebrow size={9}>Amount</Eyebrow><span />
+            </div>
+            {lines.map((l, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 60px 90px 90px 28px", gap: 8, alignItems: "center" }}>
+                <input className="input" value={l.description} onChange={(e) => setLine(i, { description: e.target.value })} placeholder="Development — 40h" style={{ padding: "6px 9px", fontSize: 12 }} />
+                <input className="input" type="number" value={l.qty} onChange={(e) => setLine(i, { qty: Number(e.target.value) })} style={{ padding: "6px 9px", fontSize: 12 }} />
+                <input className="input" type="number" value={l.rate} onChange={(e) => setLine(i, { rate: Number(e.target.value) })} style={{ padding: "6px 9px", fontSize: 12 }} />
+                <span style={{ fontSize: 12, color: "var(--text)", fontFamily: "'Geist Mono', monospace", textAlign: "right" }}>{money((Number(l.qty) || 0) * (Number(l.rate) || 0), currency, false)}</span>
+                <button className="btn btn-ghost btn-icon" style={{ width: 24, height: 24 }} onClick={() => removeLine(i)} disabled={lines.length === 1}><Icon d={I.x} size={11} /></button>
+              </div>
+            ))}
+            <button className="btn btn-ghost" style={{ fontSize: 11.5, justifyContent: "flex-start", padding: "4px 6px", width: "fit-content" }} onClick={addLine}><Icon d={I.plus} size={11} /> Add line</button>
+          </>
+        )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
         <Field label="Status">
           <select className="input" value={status} onChange={(e) => setStatus(e.target.value as Invoice["status"])}>
             {["Draft", "Sent", "Paid", "Overdue"].map((s) => <option key={s}>{s}</option>)}
           </select>
         </Field>
-        <Field label="Due in"><input className="input" value={dueIn} onChange={(e) => setDueIn(e.target.value)} placeholder="30d" /></Field>
+        <Field label="Payment terms">
+          <select
+            className="input"
+            value={term}
+            onChange={(e) => {
+              const t = e.target.value;
+              setTerm(t);
+              if (t !== "custom") setDueIn(dueDateInDays(Number(t)));
+            }}
+          >
+            {TERMS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+          </select>
+        </Field>
+        <Field label="Due date">
+          <DateField value={dueIn} onChange={(v) => { setDueIn(v); setTerm("custom"); }} placeholder="Pick a due date" />
+        </Field>
       </div>
 
       <Field label="Notes (optional)">
