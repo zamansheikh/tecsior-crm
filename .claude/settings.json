@@ -106,7 +106,8 @@
       "Bash(grep -rn '/hr\\\\|\\\\$145\\\\|rate = 145\\\\|blended' src/app/\\\\\\(app\\\\\\)/time/page.tsx src/app/\\\\\\(app\\\\\\)/team/page.tsx)",
       "Bash(perl -i -pe 's/hourly: \\(\\\\d+\\) }/\"hourly: \".\\($1*100\\).\" }\"/ge' src/data/seed-data.ts)",
       "Bash(grep -n 'rate\\\\|\\\\$' 'src/app/\\(app\\)/time/page.tsx')",
-      "Bash(perl -i -pe 's/Rate \\\\\\(\\\\$\\\\/hr\\\\\\)/Rate \\(৳\\\\/hr\\)/g' 'src/app/\\(app\\)/team/page.tsx')"
+      "Bash(perl -i -pe 's/Rate \\\\\\(\\\\$\\\\/hr\\\\\\)/Rate \\(৳\\\\/hr\\)/g' 'src/app/\\(app\\)/team/page.tsx')",
+      "Bash(git update-index *)"
     ]
   }
 }

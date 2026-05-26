@@ -381,16 +381,23 @@ function InviteModal({ onClose, onInvited }: { onClose: () => void; onInvited: (
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [memberRole, setMemberRole] = useState("Dev");
+  const [appRole, setAppRole] = useState<Member["appRole"]>("dev");
   const [title, setTitle] = useState("");
   const [hourly, setHourly] = useState(120);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  // When the job role changes, suggest the matching access level (still overridable).
+  const onRoleChange = (r: string) => {
+    setMemberRole(r);
+    setAppRole(r === "Founder" ? "founder" : r === "PM" ? "pm" : "dev");
+  };
+
   const submit = async () => {
     setErr(null);
     setBusy(true);
     try {
-      await api.team.invite({ name, email, role: memberRole, title: title || memberRole, hourly });
+      await api.team.invite({ name, email, role: memberRole, appRole, title: title || memberRole, hourly });
       onInvited();
     } catch (e) {
       setErr(e instanceof ApiError ? e.message : "Could not invite member");
@@ -407,18 +414,25 @@ function InviteModal({ onClose, onInvited }: { onClose: () => void; onInvited: (
         <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="alex@tecsior.studio" />
       </Field>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        <Field label="Role">
-          <select className="input" value={memberRole} onChange={(e) => setMemberRole(e.target.value)}>
+        <Field label="Job role">
+          <select className="input" value={memberRole} onChange={(e) => onRoleChange(e.target.value)}>
             {["Founder", "PM", "Dev", "Design", "QA", "Ops"].map((r) => <option key={r}>{r}</option>)}
           </select>
         </Field>
+        <Field label="Access level">
+          <select className="input" value={appRole} onChange={(e) => setAppRole(e.target.value as Member["appRole"])}>
+            {["founder", "director", "pm", "accountant", "auditor", "dev"].map((r) => <option key={r}>{r}</option>)}
+          </select>
+        </Field>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <Field label="Rate (৳/hr)">
           <input className="input" type="number" value={hourly} onChange={(e) => setHourly(Number(e.target.value))} />
         </Field>
+        <Field label="Title">
+          <input className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Senior Engineer" />
+        </Field>
       </div>
-      <Field label="Title">
-        <input className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Senior Engineer" />
-      </Field>
       {err && <div style={{ fontSize: 12, color: "var(--danger)", marginBottom: 10 }}>{err}</div>}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
         <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
