@@ -81,7 +81,7 @@ export default function DashboardPage() {
     const client = clientById[p.client];
     return (
       <div
-        className="rt-row"
+        className="rt-row proj-card"
         onClick={() => router.push(`/projects/${p.id}`)}
         style={{ padding: "14px 16px", borderTop: "1px solid var(--border)", display: "grid", gridTemplateColumns: "1.7fr 1fr 0.9fr 0.7fr 0.7fr", gap: 14, alignItems: "center", cursor: "pointer" }}
         onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface)")}
@@ -118,7 +118,7 @@ export default function DashboardPage() {
         <GlowOrb x="60%" y="-10%" color="var(--info)" size={280} opacity={0.22} />
         <GlowOrb x="-5%" y="120%" color="var(--accent)" size={300} opacity={0.3} />
         <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-          <div style={{ flex: 1, minWidth: 360 }}>
+          <div className="hero-main" style={{ flex: 1, minWidth: 360 }}>
             <Eyebrow color="var(--accent-soft)">
               {new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
             </Eyebrow>
@@ -136,7 +136,7 @@ export default function DashboardPage() {
               <span><b style={{ color: "var(--success)" }}>↑ 12%</b> vs last</span>
             </div>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
+          <div className="hero-aside" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
             <button className="btn" style={{ background: "rgba(0,0,0,.3)" }}>
               <Icon d={I.cal} size={13} color="var(--accent-soft)" /> Today&apos;s agenda
             </button>

@@ -365,6 +365,24 @@ a { color: inherit; text-decoration: none; }
   .audit-row > * { display: inline-flex !important; align-items: center; width: auto !important; padding: 0 !important; }
   .audit-row > *::before { content: none !important; }
   .audit-row > [data-label="Action"] { flex-basis: 100%; }
+
+  /* Dashboard hero: let the greeting block shrink so its stat line doesn't
+     overflow, and drop the agenda aside to its own full-width line. */
+  .hero-main { min-width: 0 !important; }
+  .hero-aside { align-items: flex-start !important; width: 100%; }
+
+  /* Dashboard "Active projects" card: hide the column labels, keep the project
+     name + progress bar stacked, and inline team · due · status as a meta row. */
+  .proj-card > [data-label]::before { content: none !important; }
+  .proj-card > [data-label="Team"],
+  .proj-card > [data-label="Due"],
+  .proj-card > [data-label="Status"] {
+    display: inline-flex !important;
+    width: auto !important;
+    align-items: center;
+    vertical-align: middle;
+    margin: 6px 14px 0 0;
+  }
 }
 
 @media (max-width: 440px) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, type ReactNode } from "react";
+import { Fragment, useSyncExternalStore, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon, I, Avatar, Eyebrow } from "./primitives";
@@ -10,6 +10,19 @@ import { api } from "@/lib/api";
 import { openSearch } from "@/lib/search-bus";
 import { navAccess } from "@/lib/nav-access";
 import type { AppRole } from "@/lib/types";
+
+// Tracks the mobile breakpoint without hydration mismatch or setState-in-effect.
+function useIsMobile() {
+  return useSyncExternalStore(
+    (cb) => {
+      const mq = window.matchMedia("(max-width: 768px)");
+      mq.addEventListener("change", cb);
+      return () => mq.removeEventListener("change", cb);
+    },
+    () => window.matchMedia("(max-width: 768px)").matches,
+    () => false,
+  );
+}
 
 const NavItem = ({
   label,
@@ -104,7 +117,10 @@ const NavGroup = ({ label, collapsed, children }: { label: string; collapsed?: b
 export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
   const { tweak, setTweak, user, team, projects, perms, role } = useApp();
   const pathname = usePathname();
-  const collapsed = tweak.sidebar === "collapsed";
+  const isMobile = useIsMobile();
+  // The collapse/expand rail is a desktop feature; the mobile drawer is always
+  // full-width, so ignore the persisted collapsed state on mobile.
+  const collapsed = !isMobile && tweak.sidebar === "collapsed";
   // Hard role gate (navAccess) combined with the user's own soft toggles (tweak).
   const access = navAccess(perms, role);
   const show = {
@@ -167,7 +183,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
             <div style={{ fontSize: 10.5, color: "var(--text-dim)" }}>Studio · {team.length} members</div>
           </div>
         )}
-        {!collapsed && (
+        {!collapsed && !isMobile && (
           <button onClick={() => setTweak("sidebar", "collapsed")} title="Collapse sidebar" className="btn btn-ghost btn-icon" style={{ width: 26, height: 26 }}>
             <Icon d={["M11 19l-7-7 7-7", "M19 19l-7-7 7-7"]} size={12} />
           </button>
