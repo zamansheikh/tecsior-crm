@@ -39,6 +39,9 @@ export function CommandPalette() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  // Only dismiss when the press *starts* on the backdrop, so a drag-select that
+  // begins in the search box and releases on the scrim doesn't close the palette.
+  const downOnBackdrop = useRef(false);
 
   // Open via ⌘K / Ctrl+K and via the search bus (sidebar / topbar buttons).
   useEffect(() => {
@@ -109,7 +112,8 @@ export function CommandPalette() {
 
   return (
     <div
-      onClick={() => setOpen(false)}
+      onMouseDown={(e) => { downOnBackdrop.current = e.target === e.currentTarget; }}
+      onClick={(e) => { if (e.target === e.currentTarget && downOnBackdrop.current) setOpen(false); downOnBackdrop.current = false; }}
       style={{ position: "fixed", inset: 0, zIndex: 80, background: "var(--scrim)", backdropFilter: "blur(4px)", animation: "scrim-in .15s ease-out", display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "12vh" }}
     >
       <div onClick={(e) => e.stopPropagation()} className="surface-frosted fade-up" style={{ width: 560, maxWidth: "92vw", zIndex: 81, overflow: "hidden", background: "var(--bg-elevate)", boxShadow: "0 30px 80px rgba(0,0,0,.5)" }}>

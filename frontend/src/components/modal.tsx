@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { Icon, I } from "./primitives";
 
 export function Modal({
@@ -16,11 +16,22 @@ export function Modal({
   children: ReactNode;
   width?: number;
 }) {
+  // Only dismiss when the press *starts* on the backdrop. Otherwise a drag that
+  // begins inside the card (e.g. selecting text) and releases on the backdrop
+  // would fire a click on the backdrop and wrongly close the modal.
+  const downOnBackdrop = useRef(false);
+
   return (
     // Flex-centered overlay. Centering lives on this wrapper (not a transform),
     // so the inner card's fade-up animation can't knock it off-center.
     <div
-      onClick={onClose}
+      onMouseDown={(e) => {
+        downOnBackdrop.current = e.target === e.currentTarget;
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && downOnBackdrop.current) onClose();
+        downOnBackdrop.current = false;
+      }}
       style={{
         position: "fixed",
         inset: 0,
