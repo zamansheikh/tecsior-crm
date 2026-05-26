@@ -41,6 +41,7 @@ export function TaskDrawer({ taskId, onClose }: { taskId: string; onClose: () =>
   const { user, perms, team, teamById, projectById, clientById, bump } = useApp();
   const { timer, displayMs, start, stop } = useTimer();
   const canManage = perms.projects;
+  const canWrite = perms.canWrite; // non-auditor: may check subtasks, comment, log time
   const [editAssignees, setEditAssignees] = useState(false);
   const [newTag, setNewTag] = useState("");
   const [t, setT] = useState<Task | null>(null);
@@ -221,7 +222,7 @@ export function TaskDrawer({ taskId, onClose }: { taskId: string; onClose: () =>
             <div className="surface" style={{ marginTop: 18, padding: "12px 14px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
                 <Eyebrow>Time</Eyebrow>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                {canWrite && <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   {timerOnThisTask ? (
                     <button className="btn" style={{ fontSize: 11, padding: "4px 10px", color: "var(--danger)", borderColor: "color-mix(in oklab, var(--danger) 35%, transparent)" }} onClick={async () => { await stop(); refetch(); }}>
                       <span className="pulse" style={{ width: 6, height: 6, borderRadius: 99, background: "var(--success)", boxShadow: "0 0 6px var(--success)" }} />
@@ -240,7 +241,7 @@ export function TaskDrawer({ taskId, onClose }: { taskId: string; onClose: () =>
                   <button className="btn" style={{ fontSize: 11, padding: "4px 10px" }} onClick={logTime} disabled={saving}>
                     <Icon d={I.plus} size={10} /> Log
                   </button>
-                </div>
+                </div>}
               </div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 6 }}>
                 <span style={{ fontSize: 22, color: "var(--text)", fontWeight: 600, fontFamily: "'Inter Tight', sans-serif", letterSpacing: -0.5 }}>{t.spent}h</span>
@@ -267,25 +268,27 @@ export function TaskDrawer({ taskId, onClose }: { taskId: string; onClose: () =>
               <div style={{ display: "flex", flexDirection: "column", marginTop: 6 }}>
                 {(t.checklist ?? []).map((s, i) => (
                   <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 11, padding: "9px 0", borderTop: i ? "1px solid var(--border)" : "none" }}>
-                    <button onClick={() => toggleSubtask(s.id, !s.done)} style={{ width: 16, height: 16, borderRadius: 5, background: s.done ? "var(--accent-grad)" : "transparent", border: s.done ? "none" : "1.5px solid var(--border-hi)", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", cursor: "pointer", padding: 0 }}>
+                    <button onClick={() => canWrite && toggleSubtask(s.id, !s.done)} disabled={!canWrite} style={{ width: 16, height: 16, borderRadius: 5, background: s.done ? "var(--accent-grad)" : "transparent", border: s.done ? "none" : "1.5px solid var(--border-hi)", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", cursor: canWrite ? "pointer" : "default", padding: 0 }}>
                       {s.done && <Icon d={I.check} size={9} color="#fff" stroke={2.5} />}
                     </button>
                     <span style={{ fontSize: 13, color: s.done ? "var(--text-dim)" : "var(--text)", textDecoration: s.done ? "line-through" : "none", flex: 1 }}>{s.title}</span>
-                    <button onClick={() => removeSubtask(s.id)} className="btn btn-ghost btn-icon" style={{ width: 22, height: 22 }} title="Remove"><Icon d={I.x} size={11} /></button>
+                    {canWrite && <button onClick={() => removeSubtask(s.id)} className="btn btn-ghost btn-icon" style={{ width: 22, height: 22 }} title="Remove"><Icon d={I.x} size={11} /></button>}
                   </div>
                 ))}
               </div>
-              <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-                <input
-                  className="input"
-                  value={newSub}
-                  onChange={(e) => setNewSub(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter") addSubtask(); }}
-                  placeholder="Add a subtask…"
-                  style={{ fontSize: 12.5, padding: "7px 10px" }}
-                />
-                <button className="btn" onClick={addSubtask} disabled={!newSub.trim()}><Icon d={I.plus} size={12} /> Add</button>
-              </div>
+              {canWrite && (
+                <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                  <input
+                    className="input"
+                    value={newSub}
+                    onChange={(e) => setNewSub(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") addSubtask(); }}
+                    placeholder="Add a subtask…"
+                    style={{ fontSize: 12.5, padding: "7px 10px" }}
+                  />
+                  <button className="btn" onClick={addSubtask} disabled={!newSub.trim()}><Icon d={I.plus} size={12} /> Add</button>
+                </div>
+              )}
             </div>
 
             {/* Discussion */}
@@ -316,20 +319,22 @@ export function TaskDrawer({ taskId, onClose }: { taskId: string; onClose: () =>
                 {comments.length === 0 && <div style={{ fontSize: 12.5, color: "var(--text-dim)", fontStyle: "italic", fontFamily: "'Instrument Serif', serif" }}>No comments yet — start the thread.</div>}
               </div>
 
-              <div className="surface" style={{ padding: 12 }}>
-                <textarea
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) addComment(); }}
-                  placeholder="Leave a comment…  (⌘↵ to send)"
-                  rows={2}
-                  className="input"
-                  style={{ resize: "vertical", fontFamily: "inherit", lineHeight: 1.5 }}
-                />
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", paddingTop: 10, borderTop: "1px solid var(--border)", marginTop: 10 }}>
-                  <button className="btn btn-primary" style={{ fontSize: 12 }} onClick={addComment} disabled={!draft.trim()}>Comment ⌘↵</button>
+              {canWrite && (
+                <div className="surface" style={{ padding: 12 }}>
+                  <textarea
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) addComment(); }}
+                    placeholder="Leave a comment…  (⌘↵ to send)"
+                    rows={2}
+                    className="input"
+                    style={{ resize: "vertical", fontFamily: "inherit", lineHeight: 1.5 }}
+                  />
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", paddingTop: 10, borderTop: "1px solid var(--border)", marginTop: 10 }}>
+                    <button className="btn btn-primary" style={{ fontSize: 12 }} onClick={addComment} disabled={!draft.trim()}>Comment ⌘↵</button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 

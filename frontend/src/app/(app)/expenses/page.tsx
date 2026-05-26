@@ -72,7 +72,7 @@ export default function ExpensesPage() {
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn" onClick={() => exportCsv("expenses.csv", filtered.map((e) => ({ id: e.id, date: e.date, category: e.category, vendor: e.vendor, project: e.project ? projectById[e.project]?.name ?? e.project : "", currency: e.currency, net: e.amount, vat: e.vat, total: e.total, status: e.status, note: e.note })))}><Icon d={I.download} size={12} /> Export</button>
-          {!perms.readOnly && <button className="btn btn-primary" onClick={() => setShowNew(true)}><Icon d={I.plus} size={13} /> New expense</button>}
+          {canManage && <button className="btn btn-primary" onClick={() => setShowNew(true)}><Icon d={I.plus} size={13} /> New expense</button>}
         </div>
       </div>
 

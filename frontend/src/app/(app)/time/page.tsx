@@ -21,7 +21,7 @@ import type { TimeEntry } from "@/lib/types";
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export default function TimePage() {
-  const { user, projectById, clientById, projects, version, bump } = useApp();
+  const { user, projectById, clientById, projects, perms, version, bump } = useApp();
   const { timer, displayMs, start, pause, resume, stop } = useTimer();
   const [entries, setEntries] = useState<TimeEntry[]>([]);
   const [showLog, setShowLog] = useState(false);
@@ -86,14 +86,14 @@ export default function TimePage() {
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn" onClick={() => bump()}><Icon d={I.refresh} size={12} /> Sync</button>
           <button className="btn" onClick={() => exportCsv("timesheet.csv", entries.map((e) => ({ day: e.day, date: e.date, project: projectById[e.project]?.name ?? e.project, task: e.task ?? "", minutes: e.mins, hours: (e.mins / 60).toFixed(2), billable: e.billable ? "yes" : "no", note: e.note })))}><Icon d={I.download} size={12} /> Export</button>
-          <button className="btn" onClick={() => setShowLog(true)}><Icon d={I.plus} size={12} /> Log time</button>
-          {timer ? (
+          {perms.canWrite && <button className="btn" onClick={() => setShowLog(true)}><Icon d={I.plus} size={12} /> Log time</button>}
+          {perms.canWrite && (timer ? (
             <button className="btn btn-primary" onClick={() => stop()} style={{ background: "linear-gradient(135deg, var(--accent-2), var(--danger))" }}>
               <Icon d={I.stop} size={12} fill="currentColor" stroke="none" /> Stop timer
             </button>
           ) : (
             <button className="btn btn-primary" onClick={() => setShowStart(true)}><Icon d={I.play} size={12} fill="currentColor" stroke="none" /> Start timer</button>
-          )}
+          ))}
         </div>
       </div>
 
@@ -119,14 +119,14 @@ export default function TimePage() {
             {timer?.billable && <Eyebrow color="var(--warning)" size={10}>৳{rate.toLocaleString()}/hr · billable</Eyebrow>}
           </div>
           <div style={{ display: "flex", gap: 8, flex: "0 0 auto", position: "relative" }}>
-            {timer ? (
+            {perms.canWrite && (timer ? (
               <>
                 <button onClick={() => (timer.running ? pause() : resume())} title={timer.running ? "Pause" : "Resume"} style={{ width: 42, height: 42, borderRadius: 11, border: "1px solid var(--border-hi)", background: "rgba(0,0,0,.35)", color: "var(--accent-soft)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon d={timer.running ? I.pause : I.play} size={16} fill={timer.running ? "none" : "currentColor"} stroke={timer.running ? 1.6 : "none"} /></button>
                 <button onClick={() => stop()} title="Stop" style={{ width: 42, height: 42, borderRadius: 11, border: "none", background: "linear-gradient(135deg, var(--accent-2), var(--danger))", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 0 16px color-mix(in oklab, var(--accent-2) 50%, transparent)" }}><Icon d={I.stop} size={14} fill="currentColor" stroke="none" /></button>
               </>
             ) : (
               <button onClick={() => setShowStart(true)} title="Start" style={{ width: 42, height: 42, borderRadius: 11, border: "none", background: "var(--accent-grad)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 0 16px color-mix(in oklab, var(--accent) 50%, transparent)" }}><Icon d={I.play} size={14} fill="currentColor" stroke="none" /></button>
-            )}
+            ))}
           </div>
         </div>
       </div>
@@ -263,7 +263,7 @@ export default function TimePage() {
       <div className="surface" style={{ overflow: "hidden" }}>
         <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <SectionHeader title="Entries" subtitle="Latest first" />
-          <button className="btn btn-primary" onClick={() => setShowLog(true)}><Icon d={I.plus} size={12} /> Manual entry</button>
+          {perms.canWrite && <button className="btn btn-primary" onClick={() => setShowLog(true)}><Icon d={I.plus} size={12} /> Manual entry</button>}
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "70px 1fr 90px 110px 90px 32px", gap: 12, padding: "8px 18px", borderBottom: "1px solid var(--border)" }}>
           {["Day", "Description", "Task", "Project", "Time", ""].map((hd) => <Eyebrow key={hd} size={10}>{hd}</Eyebrow>)}
@@ -292,9 +292,11 @@ export default function TimePage() {
                 <div style={{ fontSize: 13, color: "var(--text)", fontWeight: 600, fontFamily: "'Inter Tight', sans-serif" }}>{fmtHM(e.mins)}</div>
                 <div style={{ fontSize: 10.5, color: "var(--text-dim)" }}>{e.billable ? money(Math.round((e.mins / 60) * rate), "BDT", false) : "—"}</div>
               </div>
-              <button className="btn btn-ghost btn-icon" style={{ width: 24, height: 24 }} title="Delete entry" onClick={async () => { await api.time.remove(e.id).catch(() => {}); bump(); }}>
-                <Icon d={I.trash} size={12} />
-              </button>
+              {perms.canWrite ? (
+                <button className="btn btn-ghost btn-icon" style={{ width: 24, height: 24 }} title="Delete entry" onClick={async () => { await api.time.remove(e.id).catch(() => {}); bump(); }}>
+                  <Icon d={I.trash} size={12} />
+                </button>
+              ) : <span />}
             </div>
           );
         })}

@@ -47,15 +47,18 @@ export interface Perms {
   projects: boolean; // can manage projects, clients, team, tasks
   finance: boolean; // can manage invoices, expenses, accounting, assets
   readOnly: boolean; // auditor
+  canWrite: boolean; // any non-auditor — may do collaborative writes (tasks, time, comments)
 }
 
 export function permsFor(role: AppRole): Perms {
   const admin = role === "founder" || role === "director";
+  const readOnly = role === "auditor";
   return {
     admin,
     projects: admin || role === "pm",
     finance: admin || role === "pm" || role === "accountant",
-    readOnly: role === "auditor",
+    readOnly,
+    canWrite: !readOnly,
   };
 }
 

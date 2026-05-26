@@ -27,7 +27,7 @@ const COLS: { id: TaskStatus; label: string; color: string; icon: string }[] = [
 const THIS_WEEK = ["May 24", "May 26", "May 27", "May 28", "May 29", "May 30"];
 
 export default function TasksPage() {
-  const { openTask, teamById, projectById, projects, user, version, bump } = useApp();
+  const { openTask, teamById, projectById, projects, user, perms, version, bump } = useApp();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [view, setView] = useState<"kanban" | "list" | "calendar">("kanban");
   const [scope, setScope] = useState<"all" | "mine" | "week" | "overdue">("all");
@@ -53,6 +53,7 @@ export default function TasksPage() {
   };
 
   const moveTask = async (id: string, status: TaskStatus) => {
+    if (!perms.canWrite) return;
     const task = tasks.find((t) => t.id === id);
     if (!task || task.status === status) return;
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, status } : t)));
@@ -70,7 +71,7 @@ export default function TasksPage() {
     const prio = PRIORITY_COLOR[t.priority];
     return (
       <div
-        draggable
+        draggable={perms.canWrite}
         onDragStart={() => setDragId(t.id)}
         onDragEnd={() => setDragId(null)}
         onClick={() => openTask(t.id)}
@@ -131,7 +132,7 @@ export default function TasksPage() {
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn"><Icon d={I.download} size={13} /> Export</button>
-          <button className="btn btn-primary" onClick={() => setShowNew(true)}><Icon d={I.plus} size={13} /> New task</button>
+          {perms.canWrite && <button className="btn btn-primary" onClick={() => setShowNew(true)}><Icon d={I.plus} size={13} /> New task</button>}
         </div>
       </div>
 
