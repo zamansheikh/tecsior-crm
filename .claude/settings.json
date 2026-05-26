@@ -116,7 +116,8 @@
       "Bash(Get-ChildItem -Path \"f:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\routes\" -Filter \"*.ts\")",
       "Bash(Select-Object -ExpandProperty FullName)",
       "PowerShell(Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\fresh-start.ts'; if \\(-not \\(Get-ChildItem 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' -ErrorAction SilentlyContinue\\)\\) { Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' })",
-      "PowerShell(Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\seed-coa.ts'; if \\(-not \\(Get-ChildItem 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' -ErrorAction SilentlyContinue\\)\\) { Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' })"
+      "PowerShell(Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts\\\\seed-coa.ts'; if \\(-not \\(Get-ChildItem 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' -ErrorAction SilentlyContinue\\)\\) { Remove-Item -Force 'F:\\\\PN_Apps\\\\tecsior-crm\\\\backend\\\\src\\\\scripts' })",
+      "Bash(grep -rn \"position: \\\\\"fixed\\\\\"\\\\|zIndex: [0-9]\\\\{2,\\\\}\\\\|z-index\" \"src/app/\\(app\\)/time/page.tsx\" \"src/components/task-drawer.tsx\")"
     ]
   }
 }

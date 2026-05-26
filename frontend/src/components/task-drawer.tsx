@@ -156,7 +156,7 @@ export function TaskDrawer({ taskId, onClose }: { taskId: string; onClose: () =>
   return (
     <>
       <div onClick={onClose} style={scrim} />
-      <div className="surface-frosted" style={drawer}>
+      <div className="surface-frosted task-drawer" style={drawer}>
         <div style={{ height: 3, background: `linear-gradient(90deg, ${accent[0]}, ${accent[1]})`, flex: "0 0 auto" }} />
 
         {/* Header */}
@@ -175,7 +175,7 @@ export function TaskDrawer({ taskId, onClose }: { taskId: string; onClose: () =>
           </div>
         </div>
 
-        <div style={{ flex: 1, overflow: "auto", display: "grid", gridTemplateColumns: "1fr 248px" }}>
+        <div className="task-drawer-body" style={{ flex: 1, overflow: "auto", display: "grid", gridTemplateColumns: "1fr 248px" }}>
           {/* Main */}
           <div style={{ padding: "22px 24px", borderRight: "1px solid var(--border)" }}>
             {/* Status mover */}

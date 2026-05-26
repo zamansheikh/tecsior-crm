@@ -286,6 +286,14 @@ a { color: inherit; text-decoration: none; }
   /* Breathing room at the end of every page so the last section clears the
      browser's bottom chrome / any floating widget and is fully scrollable. */
   .screen-scroll { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+
+  /* Task drawer: full-screen on mobile with its body stacked to one column,
+     so the close button (top-right) is reachable and nothing is squished. */
+  .task-drawer { width: 100vw !important; }
+  .task-drawer-body { grid-template-columns: 1fr !important; }
+
+  /* Notifications dropdown: never wider than the screen. */
+  .notif-panel { width: min(340px, calc(100vw - 20px)) !important; }
   .app-sidebar {
     /* !important overrides the component's inline position:relative / zIndex. */
     position: fixed !important;

@@ -43,7 +43,7 @@ export function NotificationsBell() {
       </button>
 
       {open && (
-        <div className="surface-frosted fade-up" style={{ position: "absolute", top: 40, right: 0, width: 340, zIndex: 60, overflow: "hidden", background: "var(--bg-elevate)", boxShadow: "0 20px 50px rgba(0,0,0,.45)" }}>
+        <div className="surface-frosted fade-up notif-panel" style={{ position: "absolute", top: 40, right: 0, width: 340, zIndex: 60, overflow: "hidden", background: "var(--bg-elevate)", boxShadow: "0 20px 50px rgba(0,0,0,.45)" }}>
           <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span style={{ fontSize: 13, fontWeight: 600, fontFamily: "'Inter Tight', sans-serif" }}>Notifications</span>
             <span style={{ fontSize: 10.5, color: "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{items.length}</span>
