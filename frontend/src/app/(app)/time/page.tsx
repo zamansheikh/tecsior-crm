@@ -75,7 +75,7 @@ export default function TimePage() {
 
   return (
     <div style={{ flex: 1, padding: "20px 22px", display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
         <div>
           <Eyebrow>Workspace</Eyebrow>
           <div style={{ fontSize: 28, color: "var(--text)", fontWeight: 700, letterSpacing: -0.5, marginTop: 6, fontFamily: "'Inter Tight', sans-serif" }}>
@@ -83,7 +83,7 @@ export default function TimePage() {
             <span className="italic-serif" style={{ marginLeft: 12, fontSize: 22, color: "var(--text-sub)", fontWeight: 400 }}>· {fmtHM(totalMins)} this week</span>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button className="btn" onClick={() => bump()}><Icon d={I.refresh} size={12} /> Sync</button>
           <button className="btn" onClick={() => exportCsv("timesheet.csv", entries.map((e) => ({ day: e.day, date: e.date, project: projectById[e.project]?.name ?? e.project, task: e.task ?? "", minutes: e.mins, hours: (e.mins / 60).toFixed(2), billable: e.billable ? "yes" : "no", note: e.note })))}><Icon d={I.download} size={12} /> Export</button>
           {perms.canWrite && <button className="btn" onClick={() => setShowLog(true)}><Icon d={I.plus} size={12} /> Log time</button>}
@@ -99,7 +99,7 @@ export default function TimePage() {
 
       {/* Live timer */}
       <div style={{ padding: 1.4, borderRadius: 14, background: timer ? "conic-gradient(from 220deg, var(--accent), var(--accent-2), var(--info), var(--accent))" : "var(--border)", position: "relative" }}>
-        <div style={{ background: "var(--bg-deep)", borderRadius: 13, padding: "18px 22px", display: "flex", alignItems: "center", gap: 18, position: "relative", overflow: "hidden" }}>
+        <div className="timer-hero" style={{ background: "var(--bg-deep)", borderRadius: 13, padding: "18px 22px", display: "flex", alignItems: "center", gap: 18, position: "relative", overflow: "hidden" }}>
           <GlowOrb x="100%" y="50%" color="var(--accent)" size={240} opacity={timer ? 0.32 : 0.1} />
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, flex: "0 0 auto", position: "relative" }}>
             <span className={timer?.running ? "pulse" : ""} style={{ width: 12, height: 12, borderRadius: 99, background: timer?.running ? "var(--success)" : "var(--text-dim)", boxShadow: timer?.running ? "0 0 0 6px color-mix(in oklab, var(--success) 22%, transparent), 0 0 16px var(--success)" : "none" }} />
@@ -144,6 +144,7 @@ export default function TimePage() {
         <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--border)" }}>
           <SectionHeader title="Timesheet · this week" subtitle={`May 20 – May 26, 2026 · ${user.name}`} />
         </div>
+        <div className="week-scroll">
         <div style={{ display: "grid", gridTemplateColumns: "1.4fr repeat(7, 1fr) 110px", borderBottom: "1px solid var(--border)" }}>
           <div style={{ padding: "10px 16px" }}><Eyebrow>Project</Eyebrow></div>
           {[["Mon", "20"], ["Tue", "21"], ["Wed", "22"], ["Thu", "23"], ["Fri", "24"], ["Sat", "25"], ["Sun", "26"]].map(([d, n], i) => (
@@ -205,6 +206,7 @@ export default function TimePage() {
             <span style={{ fontSize: 16, color: "var(--accent-soft)", fontFamily: "'Inter Tight', sans-serif", fontWeight: 700 }}>{fmtHM(totalMins)}</span>
           </div>
         </div>
+        </div>
       </div>
 
       {/* Util + breakdown */}
@@ -265,30 +267,30 @@ export default function TimePage() {
           <SectionHeader title="Entries" subtitle="Latest first" />
           {perms.canWrite && <button className="btn btn-primary" onClick={() => setShowLog(true)}><Icon d={I.plus} size={12} /> Manual entry</button>}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "70px 1fr 90px 110px 90px 32px", gap: 12, padding: "8px 18px", borderBottom: "1px solid var(--border)" }}>
+        <div className="rt-head" style={{ display: "grid", gridTemplateColumns: "70px 1fr 90px 110px 90px 32px", gap: 12, padding: "8px 18px", borderBottom: "1px solid var(--border)" }}>
           {["Day", "Description", "Task", "Project", "Time", ""].map((hd) => <Eyebrow key={hd} size={10}>{hd}</Eyebrow>)}
         </div>
         {[...entries].reverse().slice(0, 12).map((e, i) => {
           const p = projectById[e.project];
           const billClass = e.billable ? "var(--success)" : "var(--text-dim)";
           return (
-            <div key={e.id} style={{ display: "grid", gridTemplateColumns: "70px 1fr 90px 110px 90px 32px", gap: 12, padding: "11px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
-              <div>
+            <div key={e.id} className="rt-row" style={{ display: "grid", gridTemplateColumns: "70px 1fr 90px 110px 90px 32px", gap: 12, padding: "11px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
+              <div data-label="Day">
                 <Eyebrow size={10}>{e.day}</Eyebrow>
                 <div style={{ fontSize: 11, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace", marginTop: 1 }}>{e.date.split(" ").pop()}</div>
               </div>
-              <div style={{ minWidth: 0 }}>
+              <div data-label="Description" style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 13, color: "var(--text)", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.note || "—"}</div>
                 <div style={{ marginTop: 3 }}>
                   <span style={{ fontSize: 10, color: billClass, fontFamily: "'Geist Mono', monospace", padding: "1px 6px", borderRadius: 3, background: `color-mix(in oklab, ${billClass} 14%, transparent)`, fontWeight: 600 }}>{e.billable ? "BILLABLE" : "INTERNAL"}</span>
                 </div>
               </div>
-              <span style={{ fontSize: 11.5, color: "var(--accent-soft)", fontFamily: "'Geist Mono', monospace" }}>{e.task || "—"}</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
+              <span data-label="Task" style={{ fontSize: 11.5, color: "var(--accent-soft)", fontFamily: "'Geist Mono', monospace" }}>{e.task || "—"}</span>
+              <div data-label="Project" style={{ display: "flex", alignItems: "center", gap: 7, minWidth: 0 }}>
                 {p && <span style={{ width: 22, height: 22, borderRadius: 5, background: `linear-gradient(135deg, ${p.accent[0]}, ${p.accent[1]})`, color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 9.5, fontWeight: 700, fontFamily: "'Inter Tight', sans-serif" }}>{p.code}</span>}
                 <span style={{ fontSize: 11.5, color: "var(--text-sub)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p?.name.split("·")[0].trim()}</span>
               </div>
-              <div>
+              <div data-label="Time">
                 <div style={{ fontSize: 13, color: "var(--text)", fontWeight: 600, fontFamily: "'Inter Tight', sans-serif" }}>{fmtHM(e.mins)}</div>
                 <div style={{ fontSize: 10.5, color: "var(--text-dim)" }}>{e.billable ? money(Math.round((e.mins / 60) * rate), "BDT", false) : "—"}</div>
               </div>

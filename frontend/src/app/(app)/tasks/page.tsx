@@ -221,7 +221,7 @@ function ListView({ tasks }: { tasks: Task[] }) {
                 <span style={{ fontSize: 11.5, color: "var(--text)", fontWeight: 600, letterSpacing: 0.3, textTransform: "uppercase" }}>{label}</span>
                 <span style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{items.length}</span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "6px 16px", borderBottom: "1px solid var(--border)", borderTop: "1px solid var(--border)" }}>
+              <div className="rt-head" style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "6px 16px", borderBottom: "1px solid var(--border)", borderTop: "1px solid var(--border)" }}>
                 {["", "ID", "Proj", "Title", "Priority", "Team", "Logged", "Due"].map((h, i) => <Eyebrow key={i} size={10}>{h}</Eyebrow>)}
               </div>
               {items.map((t) => {
@@ -229,22 +229,22 @@ function ListView({ tasks }: { tasks: Task[] }) {
                 const accent = p?.accent ?? ["#a855f7", "#f472b6"];
                 const prio = PRIORITY_COLOR[t.priority];
                 return (
-                  <div key={t.id} onClick={() => openTask(t.id)} style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "10px 16px", borderTop: "1px solid var(--border)", alignItems: "center", cursor: "pointer" }}
+                  <div key={t.id} className="rt-row" onClick={() => openTask(t.id)} style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "10px 16px", borderTop: "1px solid var(--border)", alignItems: "center", cursor: "pointer" }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface)")}
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
                     <span style={{ width: 16, height: 16, borderRadius: 4, background: t.status === "done" ? "var(--accent-grad)" : "transparent", border: t.status === "done" ? "none" : "1.5px solid var(--border-hi)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                       {t.status === "done" && <Icon d={I.check} size={9} color="#fff" stroke={2.5} />}
                     </span>
-                    <Eyebrow size={10}>{t.id}</Eyebrow>
-                    <span style={{ width: 28, height: 22, borderRadius: 5, background: `linear-gradient(135deg, ${accent[0]}, ${accent[1]})`, color: "#fff", fontSize: 9, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter Tight', sans-serif" }}>{p?.code}</span>
-                    <div style={{ minWidth: 0 }}>
+                    <span data-label="ID"><Eyebrow size={10}>{t.id}</Eyebrow></span>
+                    <span data-label="Project" style={{ width: 28, height: 22, borderRadius: 5, background: `linear-gradient(135deg, ${accent[0]}, ${accent[1]})`, color: "#fff", fontSize: 9, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter Tight', sans-serif" }}>{p?.code}</span>
+                    <div data-label="Title" style={{ minWidth: 0 }}>
                       <div style={{ fontSize: 13, color: t.status === "done" ? "var(--text-dim)" : "var(--text)", textDecoration: t.status === "done" ? "line-through" : "none", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t.title}</div>
                     </div>
-                    <span style={{ fontSize: 10.5, color: prio, fontFamily: "'Geist Mono', monospace", padding: "2px 7px", borderRadius: 4, background: `color-mix(in oklab, ${prio} 14%, transparent)`, fontWeight: 600, justifySelf: "start" }}>{t.priority}</span>
-                    <AvatarStack people={t.assignees.map((id) => teamById[id]).filter(Boolean).map((m) => ({ name: m.name, bg: m.bg }))} size={20} max={3} />
-                    <span style={{ fontSize: 11.5, color: t.spent > t.est ? "var(--warning)" : "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{t.spent}/{t.est}h</span>
-                    <span style={{ fontSize: 11.5, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{t.due}</span>
+                    <span data-label="Priority" style={{ fontSize: 10.5, color: prio, fontFamily: "'Geist Mono', monospace", padding: "2px 7px", borderRadius: 4, background: `color-mix(in oklab, ${prio} 14%, transparent)`, fontWeight: 600, justifySelf: "start" }}>{t.priority}</span>
+                    <span data-label="Team"><AvatarStack people={t.assignees.map((id) => teamById[id]).filter(Boolean).map((m) => ({ name: m.name, bg: m.bg }))} size={20} max={3} /></span>
+                    <span data-label="Logged" style={{ fontSize: 11.5, color: t.spent > t.est ? "var(--warning)" : "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{t.spent}/{t.est}h</span>
+                    <span data-label="Due" style={{ fontSize: 11.5, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{t.due}</span>
                   </div>
                 );
               })}

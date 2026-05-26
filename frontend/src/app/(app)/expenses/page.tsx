@@ -93,28 +93,29 @@ export default function ExpensesPage() {
 
       {/* Table */}
       <div className="surface" style={{ overflow: "hidden" }}>
-        <div style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "10px 18px", borderBottom: "1px solid var(--border)" }}>
+        <div className="rt-head" style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "10px 18px", borderBottom: "1px solid var(--border)" }}>
           {["Date", "Category", "Vendor / note", "Net", "VAT", "Status", ""].map((h) => <Eyebrow key={h} size={10}>{h}</Eyebrow>)}
         </div>
         {filtered.map((e, i) => {
           const proj = e.project ? projectById[e.project] : undefined;
           const who = teamById[e.createdBy];
           return (
-            <div key={e.id} style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "12px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
-              <div>
+            <div key={e.id} className="rt-row" style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "12px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
+              <div data-label="Date">
                 <div style={{ fontSize: 12, color: "var(--text)", fontFamily: "'Geist Mono', monospace" }}>{e.date}</div>
                 <div style={{ fontSize: 10, color: "var(--text-dim)" }}>{who?.name.split(" ")[0]}</div>
               </div>
-              <span style={{ fontSize: 11, color: "var(--text-sub)", padding: "2px 8px", borderRadius: 99, background: "var(--surface)", border: "1px solid var(--border)", justifySelf: "start" }}>{e.category}</span>
-              <div style={{ minWidth: 0 }}>
+              <span data-label="Category" style={{ fontSize: 11, color: "var(--text-sub)", padding: "2px 8px", borderRadius: 99, background: "var(--surface)", border: "1px solid var(--border)", justifySelf: "start" }}>{e.category}</span>
+              <div data-label="Vendor / note" style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 12.5, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.vendor || e.note || "—"}</div>
                 <div style={{ fontSize: 10.5, color: "var(--text-dim)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{proj ? proj.name : "Overhead"}{e.note && e.vendor ? ` · ${e.note}` : ""}</div>
               </div>
-              <div>
+              <div data-label="Net">
                 <div style={{ fontSize: 13, color: "var(--text)", fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{money(e.amount, e.currency, false)}</div>
                 <div style={{ fontSize: 10, color: "var(--text-dim)" }}>{e.currency}</div>
               </div>
-              <div style={{ fontSize: 12, color: e.vat ? "var(--text)" : "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{e.vat ? money(e.vat, e.currency, false) : `${e.vatRate}%`}</div>
+              <div data-label="VAT" style={{ fontSize: 12, color: e.vat ? "var(--text)" : "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{e.vat ? money(e.vat, e.currency, false) : `${e.vatRate}%`}</div>
+              <div data-label="Status">
               {canManage ? (
                 <select value={e.status} onChange={(ev) => setStatus(e, ev.target.value as ExpenseStatus)} className="input" style={{ padding: "4px 8px", fontSize: 11.5, color: STATUS_COLOR[e.status], fontWeight: 600, width: "auto" }}>
                   {["Pending", "Approved", "Reimbursed", "Paid"].map((s) => <option key={s}>{s}</option>)}
@@ -122,6 +123,7 @@ export default function ExpensesPage() {
               ) : (
                 <StatusPill label={e.status} color={STATUS_COLOR[e.status]} />
               )}
+              </div>
               <div style={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
                 {e.receiptUrl && <a href={e.receiptUrl} target="_blank" rel="noreferrer" className="btn btn-ghost btn-icon" title="Receipt"><Icon d={I.paperclip} size={13} /></a>}
                 <button className="btn btn-ghost btn-icon" title="Edit" onClick={() => setEditing(e)}><Icon d={I.edit} size={12} /></button>

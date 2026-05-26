@@ -101,7 +101,7 @@ const NavGroup = ({ label, collapsed, children }: { label: string; collapsed?: b
   </div>
 );
 
-export function Sidebar() {
+export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
   const { tweak, setTweak, user, team, projects, perms, role } = useApp();
   const pathname = usePathname();
   const collapsed = tweak.sidebar === "collapsed";
@@ -125,6 +125,7 @@ export function Sidebar() {
 
   return (
     <aside
+      className="app-sidebar"
       style={{
         background: "var(--bg-deep)",
         borderRight: "1px solid var(--border)",
@@ -207,7 +208,7 @@ export function Sidebar() {
       )}
 
       {/* Nav */}
-      <div style={{ position: "relative", overflow: "auto", flex: 1 }}>
+      <div onClick={onNavigate} style={{ position: "relative", overflow: "auto", flex: 1 }}>
         <NavGroup collapsed={collapsed} label="Workspace">
           <NavItem collapsed={collapsed} active={pathname === "/dashboard"} href="/dashboard" label="Dashboard" icon={<Icon d={I.dashboard} />} />
           <NavItem collapsed={collapsed} active={is("/projects")} href="/projects" label="Projects" icon={<Icon d={I.projects} />} badge={String(projects.length)} />
@@ -304,7 +305,7 @@ export function RoleBadge() {
   );
 }
 
-export function TopBar({ crumbs }: { crumbs: string[] }) {
+export function TopBar({ crumbs, onMenu }: { crumbs: string[]; onMenu?: () => void }) {
   const router = useRouter();
   const { user, perms, team } = useApp();
   const canManage = perms.projects;
@@ -328,6 +329,10 @@ export function TopBar({ crumbs }: { crumbs: string[] }) {
         minWidth: 0,
       }}
     >
+      <button className="btn btn-icon mobile-only" title="Menu" onClick={onMenu} style={{ flex: "0 0 auto" }}>
+        <Icon d="M3 6h18M3 12h18M3 18h18" size={16} color="var(--text-sub)" />
+      </button>
+
       <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "var(--text-sub)", minWidth: 0, flex: "1 1 auto", overflow: "hidden" }}>
         {crumbs.map((c, i) => (
           <Fragment key={i}>

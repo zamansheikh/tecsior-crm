@@ -161,13 +161,13 @@ export default function ProjectsPage() {
         </div>
       ) : (
         <div className="surface" style={{ overflow: "hidden" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1.5fr 0.9fr 1fr 0.8fr 0.6fr 0.6fr 0.6fr", gap: 14, padding: "10px 18px", borderBottom: "1px solid var(--border)" }}>
+          <div className="rt-head" style={{ display: "grid", gridTemplateColumns: "1.5fr 0.9fr 1fr 0.8fr 0.6fr 0.6fr 0.6fr", gap: 14, padding: "10px 18px", borderBottom: "1px solid var(--border)" }}>
             {["Project", "Client", "Progress", "Team", "Due", "Budget", "Status"].map((h) => <Eyebrow key={h} size={10}>{h}</Eyebrow>)}
           </div>
           {filtered.map((p) => {
             const client = clientById[p.client];
             return (
-              <div key={p.id} onClick={() => router.push(`/projects/${p.id}`)} style={{ display: "grid", gridTemplateColumns: "1.5fr 0.9fr 1fr 0.8fr 0.6fr 0.6fr 0.6fr", gap: 14, padding: "13px 18px", borderTop: "1px solid var(--border)", alignItems: "center", cursor: "pointer" }}
+              <div key={p.id} className="rt-row" onClick={() => router.push(`/projects/${p.id}`)} style={{ display: "grid", gridTemplateColumns: "1.5fr 0.9fr 1fr 0.8fr 0.6fr 0.6fr 0.6fr", gap: 14, padding: "13px 18px", borderTop: "1px solid var(--border)", alignItems: "center", cursor: "pointer" }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface)")}
                 onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
               >
@@ -178,18 +178,18 @@ export default function ProjectsPage() {
                     <div style={{ fontSize: 11, color: "var(--text-dim)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.tags.join(" · ")}</div>
                   </div>
                 </div>
-                <div style={{ fontSize: 12.5, color: "var(--text-sub)" }}>{client?.name}</div>
-                <div>
+                <div data-label="Client" style={{ fontSize: 12.5, color: "var(--text-sub)" }}>{client?.name}</div>
+                <div data-label="Progress">
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
                     <span style={{ fontSize: 11, color: "var(--text)", fontFamily: "'Geist Mono', monospace" }}>{p.pct}%</span>
                     <span style={{ fontSize: 10.5, color: "var(--text-dim)" }}>{p.tasksDone}/{p.tasksDone + p.tasksOpen}</span>
                   </div>
                   <ProgressBar pct={p.pct} color={p.accent[0]} height={4} />
                 </div>
-                <div><AvatarStack people={p.team.map((id) => teamById[id]).filter(Boolean).map((m) => ({ name: m.name, bg: m.bg }))} size={22} max={4} /></div>
-                <div style={{ fontSize: 12, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{p.deadline}</div>
-                <div style={{ fontSize: 11.5, color: p.hours > p.budget * 0.85 ? "var(--warning)" : "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{p.hours}/{p.budget}</div>
-                <div><StatusPill label={p.status.label} color={p.status.color} /></div>
+                <div data-label="Team"><AvatarStack people={p.team.map((id) => teamById[id]).filter(Boolean).map((m) => ({ name: m.name, bg: m.bg }))} size={22} max={4} /></div>
+                <div data-label="Due" style={{ fontSize: 12, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{p.deadline}</div>
+                <div data-label="Budget" style={{ fontSize: 11.5, color: p.hours > p.budget * 0.85 ? "var(--warning)" : "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{p.hours}/{p.budget}</div>
+                <div data-label="Status"><StatusPill label={p.status.label} color={p.status.color} /></div>
               </div>
             );
           })}

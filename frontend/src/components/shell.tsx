@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Sidebar, TopBar } from "./chrome";
 import { TaskDrawer } from "./task-drawer";
@@ -37,6 +37,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { taskOpenId, closeTask, perms, role } = useApp();
+  const [navOpen, setNavOpen] = useState(false);
 
   // Guard: if the current role can't see this section, bounce to the dashboard.
   // Keeps hidden pages truly inaccessible, not just hidden from the sidebar.
@@ -48,10 +49,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <TimerProvider>
-      <div className="app-shell ambient-bg">
-        <Sidebar />
+      <div className={`app-shell ambient-bg${navOpen ? " nav-open" : ""}`}>
+        <Sidebar onNavigate={() => setNavOpen(false)} />
+        {navOpen && <div className="nav-scrim" onClick={() => setNavOpen(false)} />}
         <main style={{ display: "flex", flexDirection: "column", minWidth: 0, position: "relative", overflow: "hidden" }}>
-          <TopBar crumbs={crumbs} />
+          <TopBar crumbs={crumbs} onMenu={() => setNavOpen(true)} />
           <div className="screen-scroll">{blocked ? null : children}</div>
         </main>
 

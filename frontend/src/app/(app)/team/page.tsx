@@ -354,7 +354,7 @@ function CapacityModal({
         {rows.map(({ m, count }) => {
           const band = m.util > 90 ? "var(--danger)" : m.util > 75 ? "var(--warning)" : "var(--success)";
           return (
-            <div key={m.id} style={{ display: "grid", gridTemplateColumns: "160px 1fr 120px", gap: 12, alignItems: "center" }}>
+            <div key={m.id} className="rt-row" style={{ display: "grid", gridTemplateColumns: "160px 1fr 120px", gap: 12, alignItems: "center" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
                 <Avatar name={m.name} bg={m.bg} size={26} />
                 <div style={{ minWidth: 0 }}>
@@ -362,8 +362,8 @@ function CapacityModal({
                   <Eyebrow size={9}>{m.role}</Eyebrow>
                 </div>
               </div>
-              <ProgressBar pct={m.util} color={band} />
-              <div style={{ textAlign: "right", fontSize: 11.5, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>
+              <div data-label="Utilization"><ProgressBar pct={m.util} color={band} /></div>
+              <div data-label="Load" style={{ textAlign: "right", fontSize: 11.5, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>
                 <span style={{ color: band, fontWeight: 600 }}>{m.util}%</span> · {count} proj
               </div>
             </div>

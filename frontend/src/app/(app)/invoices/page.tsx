@@ -107,23 +107,24 @@ export default function InvoicesPage() {
         <div style={{ padding: "12px 18px", borderBottom: "1px solid var(--border)" }}>
           <SectionHeader title="All invoices" subtitle="Net + VAT shown per line · click status to update" />
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "8px 18px", borderBottom: "1px solid var(--border)" }}>
+        <div className="rt-head" style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "8px 18px", borderBottom: "1px solid var(--border)" }}>
           {["Invoice #", "Client", "Issued", "Total (net + VAT)", "Status", "Due", ""].map((h, i) => <Eyebrow key={i} size={10}>{h}</Eyebrow>)}
         </div>
         {filtered.map((inv) => {
           const c = clientById[inv.client];
           return (
-            <div key={inv.id} style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "12px 18px", borderTop: "1px solid var(--border)", alignItems: "center" }}>
-              <span className="mono" style={{ fontSize: 11.5, color: "var(--accent-soft)", letterSpacing: 0.4 }}>{inv.id}</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+            <div key={inv.id} className="rt-row" style={{ display: "grid", gridTemplateColumns: cols, gap: 12, padding: "12px 18px", borderTop: "1px solid var(--border)", alignItems: "center" }}>
+              <span className="mono" data-label="Invoice" style={{ fontSize: 11.5, color: "var(--accent-soft)", letterSpacing: 0.4 }}>{inv.id}</span>
+              <div data-label="Client" style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
                 {c && <span style={{ width: 24, height: 24, borderRadius: 5, background: `color-mix(in oklab, ${c.color} 22%, var(--surface-hi))`, color: c.color, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, fontFamily: "'Inter Tight', sans-serif", border: `1px solid color-mix(in oklab, ${c.color} 30%, transparent)` }}>{c.logo}</span>}
                 <span style={{ fontSize: 12.5, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c?.name}</span>
               </div>
-              <span style={{ fontSize: 12, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{inv.issued}</span>
-              <div>
+              <span data-label="Issued" style={{ fontSize: 12, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{inv.issued}</span>
+              <div data-label="Total">
                 <div style={{ fontSize: 13, color: "var(--text)", fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{money(inv.amount, inv.currency, false)}</div>
                 <div style={{ fontSize: 10, color: "var(--text-dim)" }}>{money(inv.subtotal, inv.currency, false)} + {inv.vatRate}% VAT · {inv.currency}</div>
               </div>
+              <div data-label="Status">
               {canManage ? (
                 <select value={inv.status} onChange={(e) => setStatus(inv, e.target.value as Invoice["status"])} className="input" style={{ padding: "4px 8px", fontSize: 11.5, color: STATUS_COLOR[inv.status], fontWeight: 600, width: "auto" }}>
                   {["Draft", "Sent", "Paid", "Overdue"].map((s) => <option key={s}>{s}</option>)}
@@ -131,7 +132,8 @@ export default function InvoicesPage() {
               ) : (
                 <StatusPill label={inv.status} color={STATUS_COLOR[inv.status]} />
               )}
-              <span style={{ fontSize: 11.5, color: inv.status === "Overdue" ? "var(--danger)" : "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{inv.dueIn}</span>
+              </div>
+              <span data-label="Due" style={{ fontSize: 11.5, color: inv.status === "Overdue" ? "var(--danger)" : "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{inv.dueIn}</span>
               <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }}>
                 <a href={`/invoice/${inv.id}`} target="_blank" rel="noreferrer" className="btn btn-ghost btn-icon" title="View / PDF"><Icon d={I.download} size={13} /></a>
                 {canManage && inv.status !== "Paid" && (

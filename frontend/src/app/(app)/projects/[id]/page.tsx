@@ -96,23 +96,23 @@ export default function ProjectDetailPage() {
   const TaskLine = ({ t }: { t: Task }) => {
     const prioColor = PRIORITY_COLOR[t.priority];
     return (
-      <div onClick={() => openTask(t.id)} style={{ display: "grid", gridTemplateColumns: "20px 60px 1fr auto 80px 80px", gap: 12, alignItems: "center", padding: "10px 14px", borderTop: "1px solid var(--border)", cursor: "pointer" }}
+      <div className="rt-row" onClick={() => openTask(t.id)} style={{ display: "grid", gridTemplateColumns: "20px 60px 1fr auto 80px 80px", gap: 12, alignItems: "center", padding: "10px 14px", borderTop: "1px solid var(--border)", cursor: "pointer" }}
         onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface)")}
         onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
       >
         <span style={{ width: 16, height: 16, borderRadius: 5, background: t.status === "done" ? "var(--accent-grad)" : "transparent", border: t.status === "done" ? "none" : "1.5px solid var(--border-hi)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           {t.status === "done" && <Icon d={I.check} size={9} color="#fff" stroke={2.5} />}
         </span>
-        <Eyebrow size={10}>{t.id}</Eyebrow>
-        <div style={{ minWidth: 0 }}>
+        <span data-label="ID"><Eyebrow size={10}>{t.id}</Eyebrow></span>
+        <div data-label="Task" style={{ minWidth: 0 }}>
           <div style={{ fontSize: 13, color: t.status === "done" ? "var(--text-dim)" : "var(--text)", textDecoration: t.status === "done" ? "line-through" : "none", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t.title}</div>
           <div style={{ display: "flex", gap: 8, marginTop: 3 }}>
             {t.tags.map((tag) => <span key={tag} style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "var(--surface)", color: "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{tag}</span>)}
           </div>
         </div>
-        <span style={{ fontSize: 10.5, color: prioColor, fontFamily: "'Geist Mono', monospace", padding: "2px 7px", borderRadius: 4, background: `color-mix(in oklab, ${prioColor} 14%, transparent)`, fontWeight: 600 }}>{t.priority}</span>
-        <AvatarStack people={t.assignees.map((mid) => teamById[mid]).filter(Boolean).map((m) => ({ name: m.name, bg: m.bg }))} size={20} max={3} />
-        <span style={{ fontSize: 11, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace", textAlign: "right" }}>{t.due}</span>
+        <span data-label="Priority" style={{ fontSize: 10.5, color: prioColor, fontFamily: "'Geist Mono', monospace", padding: "2px 7px", borderRadius: 4, background: `color-mix(in oklab, ${prioColor} 14%, transparent)`, fontWeight: 600 }}>{t.priority}</span>
+        <span data-label="Team"><AvatarStack people={t.assignees.map((mid) => teamById[mid]).filter(Boolean).map((m) => ({ name: m.name, bg: m.bg }))} size={20} max={3} /></span>
+        <span data-label="Due" style={{ fontSize: 11, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace", textAlign: "right" }}>{t.due}</span>
       </div>
     );
   };
@@ -268,7 +268,7 @@ export default function ProjectDetailPage() {
               <div style={{ padding: "14px 16px" }}>
                 <SectionHeader title={`Active tasks · ${activeTasks.length}`} subtitle="In progress and queued" />
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "20px 60px 1fr auto 80px 80px", gap: 12, padding: "4px 14px" }}>
+              <div className="rt-head" style={{ display: "grid", gridTemplateColumns: "20px 60px 1fr auto 80px 80px", gap: 12, padding: "4px 14px" }}>
                 <span /><Eyebrow size={10}>ID</Eyebrow><Eyebrow size={10}>Task</Eyebrow><Eyebrow size={10}>Prio</Eyebrow><Eyebrow size={10}>Owner</Eyebrow><Eyebrow size={10}>Due</Eyebrow>
               </div>
               {activeTasks.slice(0, 8).map((t) => <TaskLine key={t.id} t={t} />)}

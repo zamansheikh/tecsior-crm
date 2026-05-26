@@ -205,22 +205,22 @@ export default function ClientsPage() {
           <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--border)" }}>
             <SectionHeader title="Recent invoices" subtitle="Last 30 days" />
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "120px 1fr 90px 90px 90px", gap: 12, padding: "8px 18px" }}>
+          <div className="rt-head" style={{ display: "grid", gridTemplateColumns: "120px 1fr 90px 90px 90px", gap: 12, padding: "8px 18px" }}>
             {["Invoice #", "Client", "Amount", "Status", "Due"].map((hd) => <Eyebrow key={hd} size={10}>{hd}</Eyebrow>)}
           </div>
           {invoices.map((inv) => {
             const c = clientById[inv.client];
             const statusColor = inv.status === "Paid" ? "var(--success)" : inv.status === "Overdue" ? "var(--danger)" : "var(--info)";
             return (
-              <div key={inv.id} style={{ display: "grid", gridTemplateColumns: "120px 1fr 90px 90px 90px", gap: 12, padding: "11px 18px", borderTop: "1px solid var(--border)", alignItems: "center" }}>
-                <span className="mono" style={{ fontSize: 11.5, color: "var(--accent-soft)", letterSpacing: 0.4 }}>{inv.id}</span>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+              <div key={inv.id} className="rt-row" style={{ display: "grid", gridTemplateColumns: "120px 1fr 90px 90px 90px", gap: 12, padding: "11px 18px", borderTop: "1px solid var(--border)", alignItems: "center" }}>
+                <span className="mono" data-label="Invoice" style={{ fontSize: 11.5, color: "var(--accent-soft)", letterSpacing: 0.4 }}>{inv.id}</span>
+                <div data-label="Client" style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
                   {c && <span style={{ width: 24, height: 24, borderRadius: 5, background: `color-mix(in oklab, ${c.color} 22%, var(--surface-hi))`, color: c.color, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, fontFamily: "'Inter Tight', sans-serif", border: `1px solid color-mix(in oklab, ${c.color} 30%, transparent)` }}>{c.logo}</span>}
                   <span style={{ fontSize: 12.5, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c?.name}</span>
                 </div>
-                <span style={{ fontSize: 13, color: "var(--text)", fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{money(inv.amount, inv.currency, false)}</span>
-                <StatusPill label={inv.status} color={statusColor} />
-                <span style={{ fontSize: 11.5, color: inv.status === "Overdue" ? "var(--danger)" : "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{inv.dueIn}</span>
+                <span data-label="Amount" style={{ fontSize: 13, color: "var(--text)", fontFamily: "'Inter Tight', sans-serif", fontWeight: 600 }}>{money(inv.amount, inv.currency, false)}</span>
+                <div data-label="Status"><StatusPill label={inv.status} color={statusColor} /></div>
+                <span data-label="Due" style={{ fontSize: 11.5, color: inv.status === "Overdue" ? "var(--danger)" : "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{inv.dueIn}</span>
               </div>
             );
           })}

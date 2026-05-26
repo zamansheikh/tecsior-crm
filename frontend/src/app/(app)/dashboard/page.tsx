@@ -81,6 +81,7 @@ export default function DashboardPage() {
     const client = clientById[p.client];
     return (
       <div
+        className="rt-row"
         onClick={() => router.push(`/projects/${p.id}`)}
         style={{ padding: "14px 16px", borderTop: "1px solid var(--border)", display: "grid", gridTemplateColumns: "1.7fr 1fr 0.9fr 0.7fr 0.7fr", gap: 14, alignItems: "center", cursor: "pointer" }}
         onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface)")}
@@ -93,18 +94,18 @@ export default function DashboardPage() {
             <div style={{ fontSize: 11.5, color: "var(--text-dim)" }}>{client?.name}</div>
           </div>
         </div>
-        <div>
+        <div data-label="Progress">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
             <span style={{ fontSize: 11.5, color: "var(--text)", fontFamily: "'Geist Mono', monospace", fontWeight: 600 }}>{p.pct}%</span>
             <span style={{ fontSize: 10.5, color: "var(--text-dim)" }}>{p.hours}h / {p.budget}h</span>
           </div>
           <ProgressBar pct={p.pct} color={p.accent[0]} />
         </div>
-        <div style={{ display: "flex" }}>
+        <div data-label="Team" style={{ display: "flex" }}>
           <AvatarStack people={p.team.map((id) => teamById[id]).filter(Boolean).map((m) => ({ name: m.name, bg: m.bg }))} size={24} max={4} />
         </div>
-        <div style={{ fontSize: 11.5, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{p.deadline}</div>
-        <div><StatusPill label={p.status.label} color={p.status.color} /></div>
+        <div data-label="Due" style={{ fontSize: 11.5, color: "var(--text-sub)", fontFamily: "'Geist Mono', monospace" }}>{p.deadline}</div>
+        <div data-label="Status"><StatusPill label={p.status.label} color={p.status.color} /></div>
       </div>
     );
   };
@@ -160,7 +161,7 @@ export default function DashboardPage() {
             <SectionHeader title="Active projects" subtitle="Sorted by health urgency" />
             <button className="btn" onClick={() => router.push("/projects")} style={{ color: "var(--accent-soft)", background: "color-mix(in oklab, var(--accent) 15%, transparent)", borderColor: "var(--border-hi)" }}>View all <Icon d={I.chevR} size={10} /></button>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1.7fr 1fr 0.9fr 0.7fr 0.7fr", gap: 14, padding: "7px 18px", borderTop: "1px solid var(--border)" }}>
+          <div className="rt-head" style={{ display: "grid", gridTemplateColumns: "1.7fr 1fr 0.9fr 0.7fr 0.7fr", gap: 14, padding: "7px 18px", borderTop: "1px solid var(--border)" }}>
             {["Project", "Progress", "Team", "Due", "Status"].map((h) => <Eyebrow key={h} size={10}>{h}</Eyebrow>)}
           </div>
           {(data?.activeProjects ?? []).slice(0, 5).map((p) => <ProjRow key={p.id} p={p} />)}

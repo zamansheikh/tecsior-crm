@@ -151,22 +151,22 @@ export default function AccountingPage() {
               <button className="btn" onClick={() => exportCsv("trial-balance.csv", tb.rows.map((r) => ({ code: r.code, account: r.name, type: r.type, debit: r.debit, credit: r.credit })))}><Icon d={I.download} size={12} /> Export</button>
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "80px 1fr 110px 140px 140px", gap: 12, padding: "8px 18px", borderBottom: "1px solid var(--border)" }}>
+          <div className="rt-head" style={{ display: "grid", gridTemplateColumns: "80px 1fr 110px 140px 140px", gap: 12, padding: "8px 18px", borderBottom: "1px solid var(--border)" }}>
             {["Code", "Account", "Type", "Debit", "Credit"].map((h, i) => <Eyebrow key={h} size={10} style={i > 2 ? { textAlign: "right" } : undefined}>{h}</Eyebrow>)}
           </div>
           {tb.rows.map((r, i) => (
-            <div key={r.code} style={{ display: "grid", gridTemplateColumns: "80px 1fr 110px 140px 140px", gap: 12, padding: "10px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
-              <span className="mono" style={{ fontSize: 11.5, color: "var(--text-dim)" }}>{r.code}</span>
-              <span style={{ fontSize: 12.5, color: "var(--text)" }}>{r.name}</span>
-              <span style={{ fontSize: 10.5, color: TYPE_COLOR[r.type], fontFamily: "'Geist Mono', monospace", padding: "2px 7px", borderRadius: 4, background: `color-mix(in oklab, ${TYPE_COLOR[r.type]} 14%, transparent)`, justifySelf: "start" }}>{r.type}</span>
-              <span style={{ fontSize: 12.5, color: r.debit ? "var(--text)" : "var(--text-soft)", fontFamily: "'Geist Mono', monospace", textAlign: "right" }}>{r.debit ? bdt(r.debit) : "—"}</span>
-              <span style={{ fontSize: 12.5, color: r.credit ? "var(--text)" : "var(--text-soft)", fontFamily: "'Geist Mono', monospace", textAlign: "right" }}>{r.credit ? bdt(r.credit) : "—"}</span>
+            <div key={r.code} className="rt-row" style={{ display: "grid", gridTemplateColumns: "80px 1fr 110px 140px 140px", gap: 12, padding: "10px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
+              <span className="mono" data-label="Code" style={{ fontSize: 11.5, color: "var(--text-dim)" }}>{r.code}</span>
+              <span data-label="Account" style={{ fontSize: 12.5, color: "var(--text)" }}>{r.name}</span>
+              <span data-label="Type" style={{ fontSize: 10.5, color: TYPE_COLOR[r.type], fontFamily: "'Geist Mono', monospace", padding: "2px 7px", borderRadius: 4, background: `color-mix(in oklab, ${TYPE_COLOR[r.type]} 14%, transparent)`, justifySelf: "start" }}>{r.type}</span>
+              <span data-label="Debit" style={{ fontSize: 12.5, color: r.debit ? "var(--text)" : "var(--text-soft)", fontFamily: "'Geist Mono', monospace", textAlign: "right" }}>{r.debit ? bdt(r.debit) : "—"}</span>
+              <span data-label="Credit" style={{ fontSize: 12.5, color: r.credit ? "var(--text)" : "var(--text-soft)", fontFamily: "'Geist Mono', monospace", textAlign: "right" }}>{r.credit ? bdt(r.credit) : "—"}</span>
             </div>
           ))}
-          <div style={{ display: "grid", gridTemplateColumns: "80px 1fr 110px 140px 140px", gap: 12, padding: "12px 18px", borderTop: "2px solid var(--border-hi)", background: "var(--surface)" }}>
+          <div className="rt-row" style={{ display: "grid", gridTemplateColumns: "80px 1fr 110px 140px 140px", gap: 12, padding: "12px 18px", borderTop: "2px solid var(--border-hi)", background: "var(--surface)" }}>
             <span /><Eyebrow color="var(--text)">Totals</Eyebrow><span />
-            <span style={{ fontSize: 13.5, color: "var(--text)", fontWeight: 700, fontFamily: "'Inter Tight', sans-serif", textAlign: "right" }}>{bdt(tb.totalDebit)}</span>
-            <span style={{ fontSize: 13.5, color: "var(--text)", fontWeight: 700, fontFamily: "'Inter Tight', sans-serif", textAlign: "right" }}>{bdt(tb.totalCredit)}</span>
+            <span data-label="Total debit" style={{ fontSize: 13.5, color: "var(--text)", fontWeight: 700, fontFamily: "'Inter Tight', sans-serif", textAlign: "right" }}>{bdt(tb.totalDebit)}</span>
+            <span data-label="Total credit" style={{ fontSize: 13.5, color: "var(--text)", fontWeight: 700, fontFamily: "'Inter Tight', sans-serif", textAlign: "right" }}>{bdt(tb.totalCredit)}</span>
           </div>
         </div>
       )}
@@ -232,10 +232,10 @@ export default function AccountingPage() {
           </div>
           <div style={{ padding: "10px 18px", borderTop: "1px solid var(--border)" }}><Eyebrow>Movements</Eyebrow></div>
           {stmt.cashFlow.movements.map((m, i) => (
-            <div key={m.id} style={{ display: "grid", gridTemplateColumns: "70px 1fr 140px", gap: 12, padding: "10px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
-              <span style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{m.date}</span>
-              <span style={{ fontSize: 12.5, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.memo}</span>
-              <span style={{ textAlign: "right", fontSize: 12.5, fontFamily: "'Geist Mono', monospace", fontWeight: 600, color: m.amount > 0 ? "var(--success)" : "var(--danger)" }}>{m.amount > 0 ? "+" : ""}{bdt(m.amount)}</span>
+            <div key={m.id} className="rt-row" style={{ display: "grid", gridTemplateColumns: "70px 1fr 140px", gap: 12, padding: "10px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
+              <span data-label="Date" style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{m.date}</span>
+              <span data-label="Memo" style={{ fontSize: 12.5, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.memo}</span>
+              <span data-label="Amount" style={{ textAlign: "right", fontSize: 12.5, fontFamily: "'Geist Mono', monospace", fontWeight: 600, color: m.amount > 0 ? "var(--success)" : "var(--danger)" }}>{m.amount > 0 ? "+" : ""}{bdt(m.amount)}</span>
             </div>
           ))}
           {stmt.cashFlow.movements.length === 0 && <div style={{ padding: 30, textAlign: "center", color: "var(--text-dim)", fontSize: 13 }}>No cash movement in this period.</div>}
@@ -287,13 +287,13 @@ export default function AccountingPage() {
             </div>
           )}
           {bankRec.lines.map((l, i) => (
-            <div key={l.entryId} style={{ display: "grid", gridTemplateColumns: "40px 70px 1fr 130px", gap: 12, padding: "10px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center", opacity: l.cleared ? 1 : 0.85 }}>
+            <div key={l.entryId} className="rt-row" style={{ display: "grid", gridTemplateColumns: "40px 70px 1fr 130px", gap: 12, padding: "10px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center", opacity: l.cleared ? 1 : 0.85 }}>
               <button onClick={() => canManage && toggleClear(l.entryId)} disabled={!canManage} style={{ width: 18, height: 18, borderRadius: 5, background: l.cleared ? "var(--accent-grad)" : "transparent", border: l.cleared ? "none" : "1.5px solid var(--border-hi)", cursor: canManage ? "pointer" : "default", display: "inline-flex", alignItems: "center", justifyContent: "center", padding: 0 }}>
                 {l.cleared && <Icon d={I.check} size={10} color="#fff" stroke={2.5} />}
               </button>
-              <span style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{l.date}</span>
-              <span style={{ fontSize: 12.5, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l.memo}</span>
-              <span style={{ textAlign: "right", fontSize: 12.5, fontFamily: "'Geist Mono', monospace", fontWeight: 600, color: l.amount > 0 ? "var(--success)" : "var(--danger)" }}>{l.amount > 0 ? "+" : ""}{bdt(l.amount)}</span>
+              <span data-label="Date" style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{l.date}</span>
+              <span data-label="Memo" style={{ fontSize: 12.5, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l.memo}</span>
+              <span data-label="Amount" style={{ textAlign: "right", fontSize: 12.5, fontFamily: "'Geist Mono', monospace", fontWeight: 600, color: l.amount > 0 ? "var(--success)" : "var(--danger)" }}>{l.amount > 0 ? "+" : ""}{bdt(l.amount)}</span>
             </div>
           ))}
           {bankRec.lines.length === 0 && <div style={{ padding: 30, textAlign: "center", color: "var(--text-dim)", fontSize: 13 }}>No movements on this account.</div>}
@@ -309,10 +309,10 @@ export default function AccountingPage() {
             <SectionHeader title="Accounting periods" subtitle="Lock closed months so the books stay frozen for audit" />
           </div>
           {periods.months.map((p, i) => (
-            <div key={p.month} style={{ display: "grid", gridTemplateColumns: "1fr 120px 120px 110px", gap: 12, padding: "12px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
+            <div key={p.month} className="rt-row" style={{ display: "grid", gridTemplateColumns: "1fr 120px 120px 110px", gap: 12, padding: "12px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
               <span style={{ fontSize: 13, color: "var(--text)", fontWeight: 500 }}>{p.label}</span>
-              <span style={{ fontSize: 11.5, color: "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{p.entries} entries</span>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 600, color: p.closed ? "var(--warning)" : "var(--success)", justifySelf: "start" }}>
+              <span data-label="Entries" style={{ fontSize: 11.5, color: "var(--text-dim)", fontFamily: "'Geist Mono', monospace" }}>{p.entries} entries</span>
+              <span data-label="Status" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 600, color: p.closed ? "var(--warning)" : "var(--success)", justifySelf: "start" }}>
                 <Icon d={p.closed ? I.lock : I.check} size={12} /> {p.closed ? "Closed" : "Open"}
               </span>
               {perms.admin ? (

@@ -84,22 +84,22 @@ export default function AuditPage() {
         <div style={{ padding: "12px 18px", borderBottom: "1px solid var(--border)" }}>
           <SectionHeader title="Activity trail" subtitle="Every create / update / delete, with actor and timestamp — immutable" />
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "180px 1fr 150px 90px 80px", gap: 12, padding: "8px 18px", borderBottom: "1px solid var(--border)" }}>
+        <div className="rt-head" style={{ display: "grid", gridTemplateColumns: "180px 1fr 150px 90px 80px", gap: 12, padding: "8px 18px", borderBottom: "1px solid var(--border)" }}>
           {["Actor", "Action", "Entity", "When", "Method"].map((h) => <Eyebrow key={h} size={10}>{h}</Eyebrow>)}
         </div>
         {items.map((a, i) => {
           const m = teamById[a.actor];
           const ec = ENTITY_COLOR[a.entity] ?? "var(--text-dim)";
           return (
-            <div key={a.id} style={{ display: "grid", gridTemplateColumns: "180px 1fr 150px 90px 80px", gap: 12, padding: "10px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+            <div key={a.id} className="rt-row audit-row" style={{ display: "grid", gridTemplateColumns: "180px 1fr 150px 90px 80px", gap: 12, padding: "10px 18px", borderTop: i ? "1px solid var(--border)" : "none", alignItems: "center" }}>
+              <div data-label="Actor" style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
                 <Avatar name={a.actorName} bg={m?.bg} size={24} />
                 <span style={{ fontSize: 12.5, color: "var(--text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.actorName}</span>
               </div>
-              <span className="mono" style={{ fontSize: 12, color: "var(--text-sub)" }}>{a.action}{a.entityId ? <span style={{ color: "var(--accent-soft)" }}> · {a.entityId}</span> : null}</span>
-              <span style={{ fontSize: 10.5, color: ec, fontFamily: "'Geist Mono', monospace", padding: "2px 8px", borderRadius: 99, background: `color-mix(in oklab, ${ec} 14%, transparent)`, justifySelf: "start", textTransform: "uppercase" }}>{a.entity}</span>
-              <span style={{ fontSize: 11.5, color: "var(--text-dim)" }}>{ago(a.at)}</span>
-              <span style={{ fontSize: 10, color: METHOD_COLOR[a.method] ?? "var(--text-dim)", fontFamily: "'Geist Mono', monospace", fontWeight: 600 }}>{a.method}</span>
+              <span className="mono" data-label="Action" style={{ fontSize: 12, color: "var(--text-sub)" }}>{a.action}{a.entityId ? <span style={{ color: "var(--accent-soft)" }}> · {a.entityId}</span> : null}</span>
+              <span data-label="Entity" style={{ fontSize: 10.5, color: ec, fontFamily: "'Geist Mono', monospace", padding: "2px 8px", borderRadius: 99, background: `color-mix(in oklab, ${ec} 14%, transparent)`, justifySelf: "start", textTransform: "uppercase" }}>{a.entity}</span>
+              <span data-label="When" style={{ fontSize: 11.5, color: "var(--text-dim)" }}>{ago(a.at)}</span>
+              <span data-label="Method" style={{ fontSize: 10, color: METHOD_COLOR[a.method] ?? "var(--text-dim)", fontFamily: "'Geist Mono', monospace", fontWeight: 600 }}>{a.method}</span>
             </div>
           );
         })}
